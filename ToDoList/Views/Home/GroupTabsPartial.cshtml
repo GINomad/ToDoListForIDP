@@ -1,0 +1,14 @@
+﻿@model IEnumerable<ToDoList.Models.Group>
+
+    <ul class="nav nav-tabs" role="tablist">
+        <li class="active"><a href="#panel_1" role="tab" data-toggle="tab">@Model.FirstOrDefault(x => x.GroupName =="All").GroupName</a></li>
+        @foreach (var item in Model)
+        {
+            if (item.GroupName != "All")
+            {
+                <li><a href="#panel_@item.GroupId" role="tab" data-toggle="tab">@Html.DisplayFor(x => item.GroupName)</a></li>
+            }
+
+        }
+    </ul>
+

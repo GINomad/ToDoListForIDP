@@ -7,6 +7,7 @@ using ToDoList.Models;
 
 namespace ToDoList.Controllers
 {
+    //All models need to refactor
     public class HomeController : Controller
     {
         private readonly ApplicationDbContext _context;

@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 
-namespace ToDoList.Models
+namespace ToDoList.ViewModels
 {
     public class ExternalLoginConfirmationViewModel
     {

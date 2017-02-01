@@ -4,6 +4,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web.Mvc;
 using ToDoList.Models;
+using ToDoList.ViewModels;
+using PagedList;
 
 namespace ToDoList.Controllers
 {
@@ -26,18 +28,21 @@ namespace ToDoList.Controllers
         {
             return View();
         }
-        public ActionResult Tasks(string groupid)
+        public ActionResult Tasks(int groupid = 1)
         {
-            if (!String.IsNullOrEmpty(groupid))
+            if (groupid == 1)
+            {
+                var task = _context.MyTasks.Where(t => t.Closed != true).ToList();
+                return View("Tasks",task);
+            }
+            if (groupid >1)
             {
                 var closedGroupId = _context.Groups.
-                    Where(x => x.GroupName == "Closed").
-                    FirstOrDefault().
-                    GroupId;
-                int id = Convert.ToInt32(groupid);
-                var task = _context.MyTasks.Where(x => x.GroupId == id && x.Closed != true).ToList();
+                    FirstOrDefault(x => x.GroupName == "Closed").
+                    GroupId;               
+                var task = _context.MyTasks.Where(x => x.GroupId == groupid && x.Closed != true).ToList();
 
-                if (id == closedGroupId)
+                if (groupid == closedGroupId)
                 {
                     task = _context.MyTasks.Where(x => x.Closed == true).ToList();
                     return View("Tasks",task);

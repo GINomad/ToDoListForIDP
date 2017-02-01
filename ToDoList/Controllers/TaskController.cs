@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Linq;
 using System.Web.Http;
+using AutoMapper;
 using Microsoft.AspNet.Identity;
 using ToDoList.Models;
+using ToDoList.ViewModels;
 
 namespace ToDoList.Controllers
 {
@@ -20,21 +22,14 @@ namespace ToDoList.Controllers
         }
 
         [HttpPost]
-        public IHttpActionResult Add([FromBody]string Title)
+        public IHttpActionResult Add(string Title)
         {
             if (Title == null)
             {
                 return BadRequest();
             }
-            var userId = User.Identity.GetUserId();
-            var user = _context.Users.FirstOrDefault(x => x.Id == userId);
-            MyTask task = new MyTask();
-            task.Title = Title;
-            task.TaskPriority = Priority.None;
-            task.Closed = false;
-            task.TimeEstimated = 0;
-            task.DueDate = DateTime.Today;
-            task.Closed = false;
+           TaskViewModel model = new TaskViewModel(Title);
+           var task =  Mapper.Map<TaskViewModel, MyTask>(model);
             _context.MyTasks.Add(task);
             _context.SaveChanges();
 

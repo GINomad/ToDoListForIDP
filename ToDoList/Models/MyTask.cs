@@ -32,15 +32,4 @@ namespace ToDoList.Models
             Comments = new List<Comment>();
         }
     }
-
-    public enum Priority
-    {
-        None = 0,
-
-        High,
-
-        Normal,
-
-        Low
-    };
 }

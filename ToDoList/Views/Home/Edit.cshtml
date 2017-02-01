@@ -1,5 +1,6 @@
 ﻿@using ToDoList.Models
-@model ToDoList.Models.TaskViewModel
+@using ToDoList.ViewModels
+@model ToDoList.ViewModels.TaskViewModel
 <div id="view">
 
     @Html.HiddenFor(x => x.TaskId, new { id = "taskID" })

@@ -4,30 +4,26 @@ using System.Linq;
 using System.Web;
 using System.Web.Mvc;
 using ToDoList.Models;
+using ToDoList.Repositories;
 using ToDoList.ViewModels;
 
 namespace ToDoList.Controllers
 {
     public class CommentController : Controller
     {
-        private readonly ApplicationDbContext _context;
+        private readonly IUnitOfWork _unitOfWork;
 
-        public CommentController()
+        public CommentController(IUnitOfWork unitOfWork)
         {
-            _context = new ApplicationDbContext();
-                }
+            _unitOfWork = unitOfWork;
+        }
 
         // GET: Comment
         [HttpPost]
         public ActionResult AddComment(CommentViewModel model)
         {
-            Comment comm = new Comment();
-            comm.CommentId = 0;
-            comm.Text = model.Text;
-            comm.TimePosted = DateTime.Now;
-            comm.MyTaskId = model.TaskId;           
-            _context.Comments.Add(comm);
-            _context.SaveChanges();
+            _unitOfWork.Comments.AddComment(model);
+
             return RedirectToAction("Index","Home");
         }
     }

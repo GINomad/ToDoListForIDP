@@ -9,22 +9,23 @@ using AutoMapper;
 using ToDoList.Models;
 using ToDoList.ViewModels;
 using PagedList;
+using ToDoList.Repositories;
 
 namespace ToDoList.Controllers
 {
     //All models need to refactor
     public class HomeController : Controller
     {
-        private readonly ApplicationDbContext _context;
+        private readonly IUnitOfWork _unitOfWork;
 
-        public HomeController()
+        public HomeController(IUnitOfWork unitOfWork)
         {
-            _context = new ApplicationDbContext();
+            _unitOfWork = unitOfWork;
         }
         [HttpGet]
         public ActionResult GetGroups()
         {
-            var groups = _context.Groups.ToList();
+            var groups = _unitOfWork.Groups.Groups.ToList();
             return PartialView("GroupTabsPartial", groups);
         }
         public ActionResult Index(string groupid)

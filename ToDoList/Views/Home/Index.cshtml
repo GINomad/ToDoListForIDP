@@ -29,20 +29,20 @@
                 <div class="tab-content">
                     <div role="tabpanel" class="tab-pane fade in active" id="panel_1">
                             @{
-                                Html.RenderAction("Tasks", "Task");
+                                Html.RenderAction("Tasks", "Task", new { groupid = 1} );
                             }
                     </div>
-                    <div role="tabpanel" class="tab-pane fade in active" id="panel_2">
+                    <div role="tabpanel" class="tab-pane fade" id="panel_2">
                         @{
                             Html.RenderAction("Tasks", "Task", new {groupid = 2});
                         }
                     </div>
-                    <div role="tabpanel" class="tab-pane fade in active" id="panel_3">
+                    <div role="tabpanel" class="tab-pane fade" id="panel_3">
                         @{
                             Html.RenderAction("Tasks", "Task", new { groupid = 3 });
                         }
                     </div>
-                    <div role="tabpanel" class="tab-pane fade in active" id="panel_4">
+                    <div role="tabpanel" class="tab-pane fade" id="panel_4">
                         @{
                             Html.RenderAction("Tasks", "Task", new { groupid = 4 });
                         }

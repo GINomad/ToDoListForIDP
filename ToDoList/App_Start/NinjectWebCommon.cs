@@ -10,6 +10,8 @@ namespace ToDoList.App_Start
 
     using Ninject;
     using Ninject.Web.Common;
+    using Repositories;
+    using Ninject.Extensions.Conventions;
 
     public static class NinjectWebCommon 
     {
@@ -46,6 +48,12 @@ namespace ToDoList.App_Start
                 kernel.Bind<IHttpModule>().To<HttpApplicationInitializationHttpModule>();
 
                 RegisterServices(kernel);
+                kernel.Bind(x =>
+                {
+                    x.FromThisAssembly()
+                       .SelectAllClasses()
+                       .BindDefaultInterface();
+                });
                 return kernel;
             }
             catch
@@ -61,6 +69,7 @@ namespace ToDoList.App_Start
         /// <param name="kernel">The kernel.</param>
         private static void RegisterServices(IKernel kernel)
         {
+            //kernel.Bind<IUnitOfWork>().To<UnitOfWork>();
         }        
     }
 }

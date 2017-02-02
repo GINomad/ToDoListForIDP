@@ -1,4 +1,4 @@
-﻿@model IEnumerable<ToDoList.Models.MyTask>
+﻿@model IEnumerable<ToDoList.ViewModels.TaskViewModel>
     
 <table class="table" id="tasks">
     <tr>
@@ -20,15 +20,15 @@
     {
         <tr>
             <td>
-                @Html.CheckBox("Check", new { id = item.MyTaskId, @class = "CheckEdit" })
+                @Html.CheckBox("Check", new { id = item.TaskId, @class = "CheckEdit" })
             </td>
-            <td id="Title_@item.MyTaskId">
+            <td id="Title_@item.TaskId">
                 @Html.DisplayFor(expression: modelItem => item.Title)
             </td>
-            <td id="DueDate_@item.MyTaskId">
+            <td id="DueDate_@item.TaskId">
                 @Html.DisplayFor(modelItem => item.DueDate.Date)
             </td>
-            <td id="Priority_@item.MyTaskId">
+            <td id="Priority_@item.TaskId">
                 @Html.DisplayFor(modelItem => item.TaskPriority)
             </td>
         </tr>

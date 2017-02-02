@@ -7,44 +7,45 @@ using System.Web.Mvc;
 using AutoMapper;
 using ToDoList.Models;
 using ToDoList.ViewModels;
+using ToDoList.Repositories;
 
 namespace ToDoList.Controllers
 {
     public class TaskController : Controller
     {
-        private readonly ApplicationDbContext _context;
+        private readonly IUnitOfWork _unitOfWork;
 
-        public TaskController()
+        public TaskController(IUnitOfWork unitOfWork)
         {
-            _context = new ApplicationDbContext();
+            _unitOfWork = unitOfWork;
         }
         // GET: Task
-        public ActionResult Tasks(int groupid = 1)
+        public ActionResult Tasks(int groupid)
         {
             if (groupid == 1)
             {
-                var task = _context.MyTasks.Where(t => t.Closed != true).ToList();
+                var task = _unitOfWork.Tasks.
+                    Tasks.
+                    Where(t => t.Closed != true)
+                    .ToList();
                 return View("Tasks", task);
             }
             if (groupid > 1)
             {
-                var closedGroupId = _context.Groups.
-                    FirstOrDefault(x => x.GroupName == "Closed").
-                    GroupId;
-                var task = _context.MyTasks.Where(x => x.GroupId == groupid && x.Closed != true).ToList();
+                var closedGroupId = _unitOfWork.Groups.GetGroupId("Closed");
+                var task = _unitOfWork.Tasks.Tasks.Where(t => t.Closed != true && t.GroupId ==groupid);
 
                 if (groupid == closedGroupId)
                 {
-                    task = _context.MyTasks.Where(x => x.Closed == true).ToList();
+                    task = _unitOfWork.Tasks.GetClosedTasks();
                     return View("Tasks", task);
                 }
                 return View("Tasks", task);
             }
             else
             {
-                var task = _context.MyTasks.Where(t => t.Closed != true).ToList();
-                return View("Tasks", task);
-            }
+                return RedirectToAction("Index", "Home");
+            }          
         }
         [HttpPost]
         public ActionResult Add(string Title)
@@ -53,18 +54,15 @@ namespace ToDoList.Controllers
             {
                 return RedirectToAction("Index","Home");
             }
-            TaskViewModel model = new TaskViewModel(Title);
-            var task = Mapper.Map<TaskViewModel, MyTask>(model);
-            _context.MyTasks.Add(task);
-            _context.SaveChanges();
+
+            _unitOfWork.Tasks.AddTask(Title);
+
             return RedirectToAction("Index","Home");
         }
         public ActionResult Edit(string id, string act)
         {
             int ID = Convert.ToInt32(id);
-            var task = _context.MyTasks.Where(t => t.MyTaskId == ID).Include(c => c.Comments).ToList();
-            TaskViewModel model = new TaskViewModel();
-            model = Mapper.Map<MyTask, TaskViewModel>(task.Single());
+            var model = _unitOfWork.Tasks.GetTaskById(ID);
 
             if (!String.IsNullOrEmpty(act) && act == "edit")
             {
@@ -76,17 +74,9 @@ namespace ToDoList.Controllers
         [HttpPost]
         public ActionResult Edit(TaskViewModel model)
         {
-            int id = model.TaskId;
-            var task = _context.MyTasks.FirstOrDefault(t => t.MyTaskId == id);
-            if (task != null)
+            if (model != null)
             {
-                task.GroupId = model.GroupId;
-                task.Closed = model.Closed;
-                task.TaskPriority = model.TaskPriority;
-                task.DueDate = model.DueDate;
-                task.TimeEstimated = model.TimeEstimated;
-                task.Title = model.Title;
-                _context.SaveChanges();
+                _unitOfWork.Tasks.Update(model);
             }
             return RedirectToAction("Index","Home");
         }

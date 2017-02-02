@@ -278,6 +278,10 @@
     <Compile Include="Migrations\201701300835432_AddedEstimatedTime.Designer.cs">
       <DependentUpon>201701300835432_AddedEstimatedTime.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201702021551226_ChangedForeighKeyComment.cs" />
+    <Compile Include="Migrations\201702021551226_ChangedForeighKeyComment.Designer.cs">
+      <DependentUpon>201702021551226_ChangedForeighKeyComment.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\Priority.cs" />
     <Compile Include="ViewModels\AccountViewModels.cs" />
@@ -352,13 +356,13 @@
     <Content Include="Views\Manage\VerifyPhoneNumber.cshtml" />
     <Content Include="Views\Shared\Lockout.cshtml" />
     <Content Include="Views\Shared\_LoginPartial.cshtml" />
-    <Content Include="Views\Home\_AddtaskPartial.cshtml" />
-    <Content Include="Views\Home\Edit.cshtml" />
-    <Content Include="Views\Home\EditPost.cshtml" />
-    <Content Include="Views\Home\_CommentsPartial.cshtml" />
-    <Content Include="Views\Home\AddCommentPartial.cshtml" />
+    <Content Include="Views\Shared\_AddtaskPartial.cshtml" />
+    <Content Include="Views\Shared\Edit.cshtml" />
+    <Content Include="Views\Shared\EditPost.cshtml" />
+    <Content Include="Views\Shared\_CommentsPartial.cshtml" />
+    <Content Include="Views\Shared\AddCommentPartial.cshtml" />
     <Content Include="Views\Home\GroupTabsPartial.cshtml" />
-    <Content Include="Views\Home\Tasks.cshtml" />
+    <Content Include="Views\Task\Tasks.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
@@ -396,6 +400,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201701300835432_AddedEstimatedTime.resx">
       <DependentUpon>201701300835432_AddedEstimatedTime.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201702021551226_ChangedForeighKeyComment.resx">
+      <DependentUpon>201702021551226_ChangedForeighKeyComment.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>

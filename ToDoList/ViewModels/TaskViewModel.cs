@@ -1,11 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using ToDoList.Models;
 
 namespace ToDoList.ViewModels 
 {
     public class TaskViewModel
     {
+        private List<CommentViewModel> _comments;
         public int TaskId { get; set; }
 
         public string Title { get; set; }
@@ -20,13 +22,21 @@ namespace ToDoList.ViewModels
 
         public bool Closed { get; set; }
 
-        public IEnumerable<CommentViewModel> Comments { get; set; }
+        public IEnumerable<CommentViewModel> Comments
+        {
+            get { return _comments; }
+            set
+            {
+                _comments = value.ToList();
+                CommentCount = Comments.Count();
+            } 
+        }
 
         public int CommentCount { get; set; }
 
         public TaskViewModel()
         {
-            Comments = new List<CommentViewModel>();
+            _comments = new List<CommentViewModel>();
         }
         public TaskViewModel(string Title)
         {
@@ -35,6 +45,7 @@ namespace ToDoList.ViewModels
             this.Closed = false;
             TaskPriority = Priority.None;
             DueDate = DateTime.Today;
+            _comments = new List<CommentViewModel>();
         }
     }
 }

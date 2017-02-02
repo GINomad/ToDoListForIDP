@@ -25,7 +25,7 @@ namespace ToDoList.Models
         public int? GroupId { get; set; }
 
         public bool Closed { get; set; }
-        public IEnumerable<Comment> Comments { get; set; }
+        public ICollection<Comment> Comments { get; set; }
 
         public MyTask()
         {

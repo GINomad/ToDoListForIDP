@@ -1,0 +1,44 @@
+﻿@using ToDoList.Models
+@using ToDoList.ViewModels
+@model ToDoList.ViewModels.TaskViewModel
+<div id="view">
+
+    @Html.HiddenFor(x => x.TaskId, new { id = "taskID" })
+    <div class="form-group">
+        <label>Title</label>
+        @Html.DisplayFor(x => x.Title)
+    </div>
+    <div class="form-group">
+        <label>Due date</label>
+        @Html.DisplayFor(x => x.DueDate)
+    </div>
+    <div class="form-group">
+        <label>Time Estimated</label>
+        @Html.DisplayFor(x => x.TimeEstimated)
+    </div>
+    <div class="form-group">
+        <label>Priority</label>
+        @Html.DisplayFor(x => x.TaskPriority)
+    </div>
+    <div class="form-group">
+        <label>Comments</label>
+        @Html.DisplayFor(x => x.CommentCount)
+        <div class="show-comments" display="inline">
+            <button type="button" onclick="btnShow()" class="btn btn-info btn-sm">Show</button>
+            <button type="button" onclick="btnHide()" class="btn btn-default btn-sm">Hide</button>
+        </div>
+    </div>
+    <button type="button" onclick="btnClick()" id="show" class="btn btn-default"><span class="glyphicon glyphicon-pencil"></span></button>
+    @Html.Partial("_CommentsPartial", @Model.Comments)
+
+
+    <div id="addcomment">
+        @{ Html.RenderPartial("AddCommentPartial", new CommentViewModel() {TaskId = Model.TaskId});}
+    </div>
+</div>
+
+<script>
+               function OnSuccessComment(data) {
+           $("#resultComment").text(data);
+       }
+        </script>

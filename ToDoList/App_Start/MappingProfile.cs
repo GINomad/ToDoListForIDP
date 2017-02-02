@@ -12,8 +12,9 @@ namespace ToDoList.App_Start
     {
         protected override void Configure()
         {
-            CreateMap<MyTask, TaskViewModel>().ReverseMap();
-            CreateMap<Comment, CommentViewModel>().ReverseMap();           
+            CreateMap<MyTask, TaskViewModel>().ForMember(t => t.TaskId,x => x.MapFrom(m => m.MyTaskId)).ReverseMap();
+            CreateMap<Comment, CommentViewModel>().ReverseMap();
+                       
         }
     }
 }

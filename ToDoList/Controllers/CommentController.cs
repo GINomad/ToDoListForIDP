@@ -25,7 +25,7 @@ namespace ToDoList.Controllers
             comm.CommentId = 0;
             comm.Text = model.Text;
             comm.TimePosted = DateTime.Now;
-            comm.TaskId = model.TaskId;
+            comm.MyTaskId = model.TaskId;           
             _context.Comments.Add(comm);
             _context.SaveChanges();
             return RedirectToAction("Index","Home");

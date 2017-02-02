@@ -1,8 +1,11 @@
 ﻿using Microsoft.AspNet.Identity;
 using System;
 using System.Collections.Generic;
+using System.Data.Entity;
 using System.Linq;
+using System.Security.Cryptography.X509Certificates;
 using System.Web.Mvc;
+using AutoMapper;
 using ToDoList.Models;
 using ToDoList.ViewModels;
 using PagedList;
@@ -28,93 +31,7 @@ namespace ToDoList.Controllers
         {
             return View();
         }
-        public ActionResult Tasks(int groupid = 1)
-        {
-            if (groupid == 1)
-            {
-                var task = _context.MyTasks.Where(t => t.Closed != true).ToList();
-                return View("Tasks",task);
-            }
-            if (groupid >1)
-            {
-                var closedGroupId = _context.Groups.
-                    FirstOrDefault(x => x.GroupName == "Closed").
-                    GroupId;               
-                var task = _context.MyTasks.Where(x => x.GroupId == groupid && x.Closed != true).ToList();
-
-                if (groupid == closedGroupId)
-                {
-                    task = _context.MyTasks.Where(x => x.Closed == true).ToList();
-                    return View("Tasks",task);
-                }
-                return View("Tasks",task);
-            }
-            else
-            {
-                var task = _context.MyTasks.Where(t => t.Closed != true).ToList();
-                return View("Tasks",task);
-            }
-        }
-        [HttpPost]
-        public ActionResult Add(string Title)
-        {
-            if (Title == null)
-            {
-                return RedirectToAction("Index");
-            }
-            MyTask task = new MyTask();
-            task.Title = Title;
-            task.TaskPriority = Priority.None;
-            task.Closed = false;
-            task.TimeEstimated = 0;
-            task.DueDate = DateTime.Today;
-            task.Closed = false;
-            _context.MyTasks.Add(task);
-            _context.SaveChanges();
-            return RedirectToAction("Index");
-        }
-        public ActionResult Edit(string id, string act)
-        {
-            int ID = Convert.ToInt32(id);
-            var task = _context.MyTasks.FirstOrDefault(x => x.MyTaskId == ID);
-            TaskViewModel model = new TaskViewModel();
-            model.TaskId = task.MyTaskId;
-            model.TaskPriority = task.TaskPriority;
-            model.Title = task.Title;
-            model.DueDate = task.DueDate;
-            model.CommentCount = _context.Comments.Count(c => c.TaskId == task.MyTaskId);
-            var Comments = _context.Comments.Where(c => c.TaskId == task.MyTaskId).ToList();
-            List<CommentViewModel> comm = new List<CommentViewModel>();
-            foreach (var item in Comments)
-            {
-                var temp = new CommentViewModel();
-                temp.ID = item.CommentId;
-                temp.Text = item.Text;
-                temp.TaskId = item.TaskId;
-                comm.Add(temp);
-            }
-            model.Comments = comm;
-            if (!String.IsNullOrEmpty(act) && act=="edit")
-            {
-                return PartialView("EditPost", model);
-            }
-            
-            return PartialView("Edit",model);
-        }
-        [HttpPost]
-        public ActionResult Edit(TaskViewModel model)
-        {
-            int id = model.TaskId;
-            var task = _context.MyTasks.FirstOrDefault(t => t.MyTaskId == id);
-            if(task != null)
-            {
-                task.TaskPriority = model.TaskPriority;
-                task.Title = model.Title;
-                task.DueDate = model.DueDate;
-                _context.SaveChanges();
-            }
-            return RedirectToAction("Index");
-        }
+       
 
 
 

@@ -1,0 +1,41 @@
+﻿@model IEnumerable<ToDoList.Models.MyTask>
+    
+<table class="table" id="tasks">
+    <tr>
+        <th>
+
+        </th>
+        <th>
+            @Html.DisplayNameFor(expression: model => model.Title)
+        </th>
+        <th>
+            @Html.DisplayNameFor(expression: model => model.DueDate)
+        </th>
+        <th>
+            @Html.DisplayNameFor(expression: model => model.TaskPriority)
+        </th>
+    </tr>
+
+    @foreach (var item in Model)
+    {
+        <tr>
+            <td>
+                @Html.CheckBox("Check", new { id = item.MyTaskId, @class = "CheckEdit" })
+            </td>
+            <td id="Title_@item.MyTaskId">
+                @Html.DisplayFor(expression: modelItem => item.Title)
+            </td>
+            <td id="DueDate_@item.MyTaskId">
+                @Html.DisplayFor(modelItem => item.DueDate.Date)
+            </td>
+            <td id="Priority_@item.MyTaskId">
+                @Html.DisplayFor(modelItem => item.TaskPriority)
+            </td>
+        </tr>
+    }
+</table>
+
+<script>
+   
+</script>
+

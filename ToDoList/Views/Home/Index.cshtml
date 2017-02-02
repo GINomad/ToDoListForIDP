@@ -3,7 +3,6 @@
 @using ToDoList.ViewModels
 
 @{
-    ViewBag.Title = "Index";
 }
 @{
     Html.RenderAction("GetGroups","Home");
@@ -30,24 +29,26 @@
                 <div class="tab-content">
                     <div role="tabpanel" class="tab-pane fade in active" id="panel_1">
                             @{
-                                Html.RenderAction("Tasks", "Home", new { groupid = 1 });
+                                Html.RenderAction("Tasks", "Task");
                             }
                     </div>
-                    <div role="tabpanel" class="tab-pane fade" id="panel_2">                        
-                            @{
-                                Html.RenderAction("Tasks", "Home", new { groupid = 2 });
-                            }                        
+                    <div role="tabpanel" class="tab-pane fade in active" id="panel_2">
+                        @{
+                            Html.RenderAction("Tasks", "Task", new {groupid = 2});
+                        }
                     </div>
-                    <div role="tabpanel" class="tab-pane fade" id="panel_3">                       
-                            @{
-                                Html.RenderAction("Tasks", "Home", new { groupid = 3 });
-                            }                        
+                    <div role="tabpanel" class="tab-pane fade in active" id="panel_3">
+                        @{
+                            Html.RenderAction("Tasks", "Task", new { groupid = 3 });
+                        }
                     </div>
-                    <div role="tabpanel" class="tab-pane fade" id="panel_4">
-                            @{
-                                Html.RenderAction("Tasks", "Home", new { groupid = 4 });
-                            }
+                    <div role="tabpanel" class="tab-pane fade in active" id="panel_4">
+                        @{
+                            Html.RenderAction("Tasks", "Task", new { groupid = 4 });
+                        }
                     </div>
+
+                    
                 </div>
             </div>              
                 <div class="col-lg-4">
@@ -59,69 +60,71 @@
     </div>
     </div>
     @section scripts
-{
+    {
         <script>
             function OnClick() {
-                $.post("/home/add/",
-                             { "Title": $("#Title").val() })
-                         .done(function () {
-                             $(".js-btn-add").removeClass("btn-primary").addClass("btn-success");
-                         });
+                $.post("/task/add/",
+                        { "Title": $("#Title").val() })
+                    .done(function() {
+                        $(".js-btn-add").removeClass("btn-primary").addClass("btn-success");
+                    });
 
             }
-            $(document).ready(function () {
+
+            $(document).ready(function() {
                 $("#edit").hide();
                 $("#view").hide();
 
             });
+
             $(document).ready(function () {
                 $(".CheckEdit").click(function (e) {
                     var id = $(e.target).attr("id");
-                    var boxes = $(".CheckEdit");
-                    for (var i = 0; i < boxes.length; i++) {
-                        var _id = "#" + (i + 1);
-                        $(_id).prop("checked", false);
-                        if (i + 1 == id)
-                            $(_id).prop("checked", true);
-                    }
+                    var boxes = window.$(".CheckEdit").sort("asc");
+                    boxes.each(function (index, element) {
+                            $(element).prop("checked", false);                                                                  
+                    });
+                    $(e.target).prop("checked", true);
                     $("#view").show();
                     $("#edit").hide();
                     $.ajax({
-                        url: 'Home/Edit?id=' + id,
+                        url: '@Url.Action("Edit","Task")/?id=' + id,
                         dataType: "text",
                         type: "GET",
                         success: function (data) {
                             $("#view").html(data);
                             $(".comments").css("display", "none");
                         }
-
                     });
-
                 });
-
             });
+
             function btnClick() {
                 var id = $("#taskID").val();
                 $("#view").hide();
                 $("#edit").show();
                 $.ajax({
-                    url: 'Home/Edit?id=' + id + '&act=edit',
+                    url: '@Url.Action("Edit","Task")/?id=' + id + '&act=edit',
                     dataType: "text",
                     type: "GET",
-                    success: function (data) {
+                    success: function(data) {
 
                         $("#edit").html(data);
                     }
                 });
                 return true;
             }
-            $("#Cancel").click(function () {
+
+            $("#Cancel").click(function() {
                 $("#view").show();
                 $("#edit").hide();
             });
+
             function btnShow() {
                 $(".comments").css("display", "block");
-            } function btnHide() {
+            }
+
+            function btnHide() {
                 $(".comments").css("display", "none");
             }
 

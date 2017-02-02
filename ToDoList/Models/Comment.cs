@@ -13,7 +13,8 @@ namespace ToDoList.Models
         [Required]
         public string Text { get; set; }
 
-        public int TaskId { get; set; }
+        [Required]
+        public int MyTaskId { get; set; }
 
         public MyTask Task { get; set; }
 

@@ -22,6 +22,7 @@ namespace ToDoList.Controllers
         // GET: Task
         public ActionResult Tasks(int groupid)
         {
+            ViewBag.Group = groupid;
             if (groupid == 1)
             {
                 var task = _unitOfWork.Tasks.
@@ -80,5 +81,24 @@ namespace ToDoList.Controllers
             }
             return RedirectToAction("Index","Home");
         }
+        [HttpPost]
+        public ActionResult DeleteAll(int [] id)
+        {
+            if(id != null)
+            {
+                for (int i = 0; i < id.Length; i++)
+                {
+                    _unitOfWork.Tasks.Delete(id[i]);
+                }
+                Session["Response"] = "";
+                return RedirectToAction("Index","Home",new {id=1 });
+            }
+            else
+            {
+                Session["Response"] = "You must choice one or more tasks before deleting";
+                return RedirectToAction("Index", "Home", new { id=1});
+
+            }
+        } 
     }
 }

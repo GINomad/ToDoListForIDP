@@ -31,4 +31,27 @@ textarea {
 .container > .row > .col-lg-12 {
     width: 100%;
     padding-top: 45px;
-}   
+}
+.priority-color-none{
+    border-style:solid;
+    border-width:1px;   
+    border-color:black !important;
+}
+.priority-color-high{
+    border-style:solid;
+    border-width:1px;   
+    border-color:black !important;
+    background-color:red;
+}
+.priority-color-normal{
+    border-style:solid;
+    border-width:1px;   
+    border-color:black !important;
+    background-color:blue;
+}
+.priority-color-low{
+    border-style:solid;
+    border-width:1px;   
+    border-color:black !important;
+    background-color:deepskyblue;
+}    

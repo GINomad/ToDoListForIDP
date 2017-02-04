@@ -1,17 +1,25 @@
 ﻿@model IEnumerable<ToDoList.ViewModels.TaskViewModel>
-    
-<table class="table" id="tasks">
-    <tr>
-        <th>
 
+@{
+    Layout = null;
+} 
+<div>
+    <button class="btn btn-link js-btn-delete-all" data="@ViewBag.Group.ToString()">Delete all</button>
+    </div>   
+<table class="table container" id="tasks">
+    <tr>
+        <th class="col-xs-1">
+            </th>
+        <th class="col-xs-1">
+            @Html.CheckBox("Select All",false,new { id= "Select_All"+ViewBag.Group.ToString()})<label>Select All</label>
         </th>
-        <th>
+        <th class="col-xs-4">
             @Html.DisplayNameFor(expression: model => model.Title)
         </th>
-        <th>
+        <th class="col-xs-3">
             @Html.DisplayNameFor(expression: model => model.DueDate)
         </th>
-        <th>
+        <th class="col-xs-2">
             @Html.DisplayNameFor(expression: model => model.TaskPriority)
         </th>
     </tr>
@@ -19,16 +27,18 @@
     @foreach (var item in Model)
     {
         <tr>
-            <td>
-                @Html.CheckBox("Check", new { id = item.TaskId, @class = "CheckEdit" })
+            <td id="Prior_@ViewBag.Group.ToString()_@item.TaskId">               
             </td>
-            <td id="Title_@item.TaskId">
+            <td class="col-xs-2">
+                @Html.CheckBox("Check", new { id = item.TaskId, @class = "CheckEdit checkbox"+ViewBag.Group.ToString(), data = ViewBag.Group.ToString()})
+            </td>
+            <td id="Title_@item.TaskId" class="col-xs-4">
                 @Html.DisplayFor(expression: modelItem => item.Title)
             </td>
-            <td id="DueDate_@item.TaskId">
+            <td id="DueDate_@item.TaskId" class="col-xs-3">
                 @Html.DisplayFor(modelItem => item.DueDate.Date)
             </td>
-            <td id="Priority_@item.TaskId">
+            <td id="Priority_@item.TaskId" class="col-xs-2">
                 @Html.DisplayFor(modelItem => item.TaskPriority)
             </td>
         </tr>

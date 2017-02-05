@@ -2,7 +2,7 @@
 @using ToDoList.ViewModels
 @model ToDoList.ViewModels.TaskViewModel
 <div id="view">
-
+    @Html.HiddenFor(x => x.ApplicationUserId)
     @Html.HiddenFor(x => x.TaskId, new { id = "taskID" })
     <div class="form-group">
         <label>Title</label>

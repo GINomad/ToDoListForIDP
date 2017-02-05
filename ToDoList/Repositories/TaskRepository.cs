@@ -6,15 +6,21 @@ using System.Linq;
 using System.Web;
 using ToDoList.Models;
 using ToDoList.ViewModels;
+using Microsoft.AspNet.Identity;
 
 namespace ToDoList.Repositories
 {
     public class TaskRepository : ITaskRepository
     {
         private readonly ApplicationDbContext _context;
+        private Dictionary<string, Priority> prior = new Dictionary<string, Priority>();
         public TaskRepository(ApplicationDbContext context)
         {
             _context = context;
+            prior.Add("None", Priority.None);
+            prior.Add("High", Priority.High);
+            prior.Add("Normal", Priority.Normal);
+            prior.Add("Low", Priority.Low);
         }
 
         public IEnumerable<TaskViewModel> Tasks {
@@ -27,9 +33,10 @@ namespace ToDoList.Repositories
         {
             return Tasks.Where(t => t.Closed == true);
         }
-        public void AddTask(string Title)
+        public void AddTask(string Title, string id)
         {
             TaskViewModel model = new TaskViewModel(Title);
+            model.ApplicationUserId = id;
             var task = Mapper.Map<TaskViewModel, MyTask>(model);
             _context.MyTasks.Add(task);
             _context.SaveChanges();
@@ -82,6 +89,18 @@ namespace ToDoList.Repositories
             else
             {
                 throw new InvalidOperationException("Cannot delete task. Task not found");
+            }
+        }
+        
+        public void SetPriority(int id, string priority)
+        {
+            var task = _context.MyTasks.FirstOrDefault(t => t.MyTaskId == id); 
+            if(task != null)
+            {
+                Priority temp;
+                prior.TryGetValue(priority, out temp);
+                task.TaskPriority = temp;
+                _context.SaveChanges();
             }
         }
     }

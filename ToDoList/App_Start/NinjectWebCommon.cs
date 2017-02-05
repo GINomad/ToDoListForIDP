@@ -69,7 +69,6 @@ namespace ToDoList.App_Start
         /// <param name="kernel">The kernel.</param>
         private static void RegisterServices(IKernel kernel)
         {
-            //kernel.Bind<IUnitOfWork>().To<UnitOfWork>();
         }        
     }
 }

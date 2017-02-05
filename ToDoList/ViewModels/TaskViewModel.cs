@@ -22,6 +22,8 @@ namespace ToDoList.ViewModels
 
         public bool Closed { get; set; }
 
+        public string ApplicationUserId { get; set; }
+
         public IEnumerable<CommentViewModel> Comments
         {
             get { return _comments; }

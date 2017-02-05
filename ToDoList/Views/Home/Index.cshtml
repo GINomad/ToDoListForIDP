@@ -12,7 +12,7 @@
     <div class="panel-body">
         <div class="container">
             <div class="row">
-                <div class="col-lg-12">
+                <div class="col-xs-12">
                     @{
                         Html.RenderPartial($"_AddTaskPartial", new TaskViewModel()
                         {
@@ -25,7 +25,7 @@
                 </div>
             </div>
             <div class="row">
-             <div class="col-lg-8">
+             <div class="col-xs-8">
                 <div class="tab-content">
                     <div role="tabpanel" class="tab-pane fade in active" id="panel_1">
                             @{
@@ -62,6 +62,74 @@
     @section scripts
     {
         <script>
+            $(".js-btn-close").click(function () {
+                var data = $(this).attr("data");
+                var chkGroup = ".checkbox" + data;
+                var boxes = $(chkGroup);
+                var chkBoxesID = new Array();
+                boxes.each(function (index, element) {
+                    if ($(element).prop('checked') == true) {
+                        chkBoxesID[index] = $(element).attr("id");
+                    }
+                });
+                $.ajax({
+                    url: '@Url.Action("Complete", "Task")',
+                    type: 'POST',
+                    data: JSON.stringify(chkBoxesID),
+                    contentType: "application/json;charset=utf-8",
+                    success: function () {
+                        location.reload();
+                    }
+                });
+            });
+
+            $(".js-btn-due-today").click(function(){
+            var data = $(this).attr("data");
+            var today = '@System.DateTime.Today.ToString()';
+                today = today.trim();
+            var dueTodayGroup = ".duetoday_"+data;
+            var chkGroup = ".checkbox" + data;
+            var todayTasks = $(dueTodayGroup);
+            var boxes = $(chkGroup);
+            todayTasks.each(function (index, element) {
+                var str = $(element).text();
+                str = str.trim();
+                if ( str == today) {
+                    $(boxes[index]).prop("checked", true);
+                    var id = $(boxes[index]).attr("id");
+                    var priority = $("#Priority_" + id).attr("data");
+                    priority = priority.toLowerCase().trim();
+                    var classname = "priority-color-" + priority;
+                    $("#Prior_1_" + id).addClass(classname);
+                    
+                }
+            });
+            });
+            $(".js-priority").click(function () {
+                var data = $(this).attr("data");
+                var chkGroup = ".checkbox" + data;
+                var boxes = $(chkGroup);
+                var chkBoxesID = new Array();
+                var prior = $(this).text();
+                boxes.each(function (index, element) {
+                    if ($(element).prop('checked') == true) {
+                        chkBoxesID[index] = $(element).attr("id");
+                    }
+                });
+                $.ajax({
+                    url: '@Url.Action("SetPriorityAll", "Task")',
+                    type: 'POST',
+                    data: {
+                        id: chkBoxesID,
+                        priority: prior
+                    },
+                    dataType: "json",
+                    success: function () {
+                        location.reload();
+                    }
+                });
+
+            });
             $(".js-btn-delete-all").click(function () {
                 var data = $(this).attr("data");
                 var chkGroup = ".checkbox" + data;
@@ -71,9 +139,9 @@
                     if ($(element).prop('checked') == true)
                     {
                         chkBoxesID[index] = $(element).attr("id");
-                   }                
+                   }
                 });
-                
+
                 $.ajax({
                     url: '@Url.Action("DeleteAll", "Task")',
                     type: 'POST',
@@ -107,7 +175,7 @@
                 {
                     boxes.each(function (index, element) {
                         var id = $(element).attr("id");
-                        var priority = $("#Priority_" + id).text();
+                        var priority = $("#Priority_" + id).attr("data");
                         priority = priority.toLowerCase().trim();
                         var classname = "priority-color-" + priority;
                         $("#Prior_1_" + id).addClass(classname);
@@ -119,12 +187,12 @@
                     $("#Prior_1_" + id).removeClass();
                 });
                 }
-                
+
             });
             $('.checkbox1').change(function () {
                 //uncheck "select all", if one of the listed checkbox item is unchecked
                 if (false == $(this).prop("checked")) { //if this item is unchecked
-                    $("#Select_All1").prop('checked', false); //change "select all" checked status to false                                                         
+                    $("#Select_All1").prop('checked', false); //change "select all" checked status to false
                 }
                 //check "select all" if all checkbox items are checked
                 if ($('.checkbox1:checked').length == $('.checkbox1').length) {
@@ -147,7 +215,7 @@
                 {
                     boxes.each(function (index, element) {
                         var id = $(element).attr("id");
-                        var priority = $("#Priority_" + id).text();
+                        var priority = $("#Priority_" + id).attr("data");
                         priority = priority.toLowerCase().trim();
                         var classname = "priority-color-" + priority;
                         $("#Prior_2_" + id).addClass(classname);
@@ -159,12 +227,12 @@
                         $("#Prior_2_" + id).removeClass();
                     });
                 }
-                
+
             });
             $('.checkbox2').change(function () {
                 //uncheck "select all", if one of the listed checkbox item is unchecked
                 if (false == $(this).prop("checked")) { //if this item is unchecked
-                    $("#Select_All2").prop('checked', false); //change "select all" checked status to false                                                         
+                    $("#Select_All2").prop('checked', false); //change "select all" checked status to false
                 }
                 //check "select all" if all checkbox items are checked
                 if ($('.checkbox2:checked').length == $('.checkbox2').length) {
@@ -187,7 +255,7 @@
                 {
                     boxes.each(function (index, element) {
                         var id = $(element).attr("id");
-                        var priority = $("#Priority_" + id).text();
+                        var priority = $("#Priority_" + id).attr("data");
                         priority = priority.toLowerCase().trim();
                         var classname = "priority-color-" + priority;
                         $("#Prior_3_" + id).addClass(classname);
@@ -203,7 +271,7 @@
             $('.checkbox3').change(function () {
                 //uncheck "select all", if one of the listed checkbox item is unchecked
                 if (false == $(this).prop("checked")) { //if this item is unchecked
-                    $("#Select_All3").prop('checked', false); //change "select all" checked status to false                                                         
+                    $("#Select_All3").prop('checked', false); //change "select all" checked status to false
                 }
                 //check "select all" if all checkbox items are checked
                 if ($('.checkbox3:checked').length == $('.checkbox3').length) {
@@ -226,7 +294,7 @@
                 {
                     boxes.each(function (index, element) {
                         var id = $(element).attr("id");
-                        var priority = $("#Priority_" + id).text();
+                        var priority = $("#Priority_" + id).attr("data");
                         priority = priority.toLowerCase().trim();
                         var classname = "priority-color-" + priority;
                         $("#Prior_4_" + id).addClass(classname);
@@ -238,12 +306,12 @@
                         $("#Prior_4_" + id).removeClass();
                     });
                 }
-                
+
             });
             $('.checkbox4').change(function () {
                 //uncheck "select all", if one of the listed checkbox item is unchecked
                 if (false == $(this).prop("checked")) { //if this item is unchecked
-                    $("#Select_All4").prop('checked', false); //change "select all" checked status to false                                                         
+                    $("#Select_All4").prop('checked', false); //change "select all" checked status to false
                 }
                 //check "select all" if all checkbox items are checked
                 if ($('.checkbox4:checked').length == $('.checkbox4').length) {
@@ -261,9 +329,9 @@
                     var id = $(e.target).attr("id");
                     var data = $(e.target).attr("data");
                     var boxes = window.$(".CheckEdit").sort("asc");
-                    var priority = $("#Priority_" + id).text();
+                    var priority = $("#Priority_" + id).attr("data");
                     priority = priority.toLowerCase().trim();
-                    var classname = "priority-color-" + priority;                   
+                    var classname = "priority-color-" + priority;
                     if ($(e.target).is(":checked"))
                     {
                         boxes.each(function (index, element) {

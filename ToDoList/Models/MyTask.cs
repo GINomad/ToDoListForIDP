@@ -27,6 +27,10 @@ namespace ToDoList.Models
         public bool Closed { get; set; }
         public ICollection<Comment> Comments { get; set; }
 
+        public ApplicationUser User { get; set; }
+
+        public string ApplicationUserId { get; set; }
+
         public MyTask()
         {
             Comments = new List<Comment>();

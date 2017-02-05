@@ -20,7 +20,7 @@ namespace ToDoList.Controllers
 
         public HomeController(IUnitOfWork unitOfWork)
         {
-            _unitOfWork = unitOfWork;
+            _unitOfWork = unitOfWork;           
         }
         [HttpGet]
         public ActionResult GetGroups()

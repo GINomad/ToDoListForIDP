@@ -4,8 +4,26 @@
     Layout = null;
 } 
 <div>
-    <button class="btn btn-link js-btn-delete-all" data="@ViewBag.Group.ToString()">Delete all</button>
-    </div>   
+    <button class="btn btn-link js-btn-delete-all" data="@ViewBag.Group.ToString()">Delete Task</button>
+    <button class="btn btn-link js-btn-due-today" data="@ViewBag.Group.ToString()">Select Due Today</button>
+    @if (ViewBag.Group != 4)
+    {
+        <button class="btn btn-link js-btn-close" data="@ViewBag.Group.ToString()">Complete</button>
+        <li class="dropdown">
+            <a id="drop1" href="#" class="dropdown-toggle" data-toggle="dropdown">
+                Actions
+                <span class="caret"></span>
+            </a>
+            <ul class="dropdown-menu">
+                <li><a href="#" class="js-priority" data="@ViewBag.Group.ToString()">None</a></li>
+                <li><a href="#" class="js-priority" data="@ViewBag.Group.ToString()">High</a></li>
+                <li><a href="#" class="js-priority" data="@ViewBag.Group.ToString()">Normal</a></li>
+                <li><a href="#" class="js-priority" data="@ViewBag.Group.ToString()">Low</a></li>
+            </ul>
+        </li>
+    } 
+</div>
+
 <table class="table container" id="tasks">
     <tr>
         <th class="col-xs-1">
@@ -19,15 +37,12 @@
         <th class="col-xs-3">
             @Html.DisplayNameFor(expression: model => model.DueDate)
         </th>
-        <th class="col-xs-2">
-            @Html.DisplayNameFor(expression: model => model.TaskPriority)
-        </th>
     </tr>
 
     @foreach (var item in Model)
     {
         <tr>
-            <td id="Prior_@ViewBag.Group.ToString()_@item.TaskId">               
+            <td width="10%" id="Prior_@ViewBag.Group.ToString()_@item.TaskId">               
             </td>
             <td class="col-xs-2">
                 @Html.CheckBox("Check", new { id = item.TaskId, @class = "CheckEdit checkbox"+ViewBag.Group.ToString(), data = ViewBag.Group.ToString()})
@@ -35,11 +50,11 @@
             <td id="Title_@item.TaskId" class="col-xs-4">
                 @Html.DisplayFor(expression: modelItem => item.Title)
             </td>
-            <td id="DueDate_@item.TaskId" class="col-xs-3">
+            <td id="DueDate_@item.TaskId" class="col-xs-3 duetoday_@ViewBag.Group.ToString()">
                 @Html.DisplayFor(modelItem => item.DueDate.Date)
             </td>
-            <td id="Priority_@item.TaskId" class="col-xs-2">
-                @Html.DisplayFor(modelItem => item.TaskPriority)
+            <td id="Priority_@item.TaskId" data="@item.TaskPriority" style="border-top:none">
+                @Html.HiddenFor(modelItem => item.TaskPriority)
             </td>
         </tr>
     }

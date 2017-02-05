@@ -286,6 +286,10 @@
     <Compile Include="Migrations\201702021551226_ChangedForeighKeyComment.Designer.cs">
       <DependentUpon>201702021551226_ChangedForeighKeyComment.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201702051455078_AddedUserToTasks.cs" />
+    <Compile Include="Migrations\201702051455078_AddedUserToTasks.Designer.cs">
+      <DependentUpon>201702051455078_AddedUserToTasks.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\Priority.cs" />
     <Compile Include="Repositories\CommentRepository.cs" />
@@ -415,6 +419,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201702021551226_ChangedForeighKeyComment.resx">
       <DependentUpon>201702021551226_ChangedForeighKeyComment.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201702051455078_AddedUserToTasks.resx">
+      <DependentUpon>201702051455078_AddedUserToTasks.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>

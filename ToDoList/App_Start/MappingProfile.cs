@@ -5,6 +5,7 @@ using System.Web;
 using AutoMapper;
 using ToDoList.Models;
 using ToDoList.ViewModels;
+using Microsoft.AspNet.Identity;
 
 namespace ToDoList.App_Start
 {
@@ -12,7 +13,10 @@ namespace ToDoList.App_Start
     {
         protected override void Configure()
         {
-            CreateMap<MyTask, TaskViewModel>().ForMember(t => t.TaskId,x => x.MapFrom(m => m.MyTaskId)).ReverseMap();
+            CreateMap<MyTask, TaskViewModel>()
+                .ForMember(t => t.TaskId,x => x.MapFrom(m => m.MyTaskId))
+                //.ForMember(u => u.ApplicationUserId, i => i.MapFrom(task => task.ApplicationUserId))
+                .ReverseMap();
             CreateMap<Comment, CommentViewModel>().ReverseMap();
                        
         }

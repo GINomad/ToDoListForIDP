@@ -9,6 +9,7 @@ using ToDoList.ViewModels;
 
 namespace ToDoList.Controllers
 {
+    [Authorize]
     public class CommentController : Controller
     {
         private readonly IUnitOfWork _unitOfWork;

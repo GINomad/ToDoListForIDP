@@ -8,9 +8,11 @@ using AutoMapper;
 using ToDoList.Models;
 using ToDoList.ViewModels;
 using ToDoList.Repositories;
+using Microsoft.AspNet.Identity;
 
 namespace ToDoList.Controllers
 {
+    [Authorize]
     public class TaskController : Controller
     {
         private readonly IUnitOfWork _unitOfWork;
@@ -27,19 +29,19 @@ namespace ToDoList.Controllers
             {
                 var task = _unitOfWork.Tasks.
                     Tasks.
-                    Where(t => t.Closed != true)
+                    Where(t => t.Closed != true && t.ApplicationUserId == User.Identity.GetUserId())
                     .ToList();
                 return View("Tasks", task);
             }
             if (groupid > 1)
             {
                 var closedGroupId = _unitOfWork.Groups.GetGroupId("Closed");
-                var task = _unitOfWork.Tasks.Tasks.Where(t => t.Closed != true && t.GroupId ==groupid);
+                var task = _unitOfWork.Tasks.Tasks.Where(t => t.Closed != true && t.GroupId ==groupid && t.ApplicationUserId == User.Identity.GetUserId());
 
                 if (groupid == closedGroupId)
                 {
                     task = _unitOfWork.Tasks.GetClosedTasks();
-                    return View("Tasks", task);
+                    return View("Tasks", task.Where(t => t.ApplicationUserId == User.Identity.GetUserId()));
                 }
                 return View("Tasks", task);
             }
@@ -55,8 +57,8 @@ namespace ToDoList.Controllers
             {
                 return RedirectToAction("Index","Home");
             }
-
-            _unitOfWork.Tasks.AddTask(Title);
+            var id = User.Identity.GetUserId();
+            _unitOfWork.Tasks.AddTask(Title, id);
 
             return RedirectToAction("Index","Home");
         }
@@ -88,6 +90,7 @@ namespace ToDoList.Controllers
             {
                 for (int i = 0; i < id.Length; i++)
                 {
+                    if(id[i] != 0)
                     _unitOfWork.Tasks.Delete(id[i]);
                 }
                 Session["Response"] = "";
@@ -100,5 +103,27 @@ namespace ToDoList.Controllers
 
             }
         } 
+        [HttpPost]
+        public ActionResult SetPriorityAll(int [] id, string priority)
+        {
+            for(int i = 0;i<id.Length;i++)
+            {
+                if(id[i] != 0)
+                _unitOfWork.Tasks.SetPriority(id[i], priority);
+            }
+            return RedirectToAction("Index", "Home");
+        }
+        [HttpPost]
+        public ActionResult Complete (int [] id)
+        {
+            for(int i=0;i<id.Length;i++)
+            {
+                if(id[i] != 0)
+                {
+                    _unitOfWork.Tasks.Close(id[i]);
+                }
+            }
+            return RedirectToAction("Index","Home", new {groupid = 4 });
+        }
     }
 }

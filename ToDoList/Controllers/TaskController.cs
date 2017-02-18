@@ -22,33 +22,9 @@ namespace ToDoList.Controllers
             _unitOfWork = unitOfWork;
         }
         // GET: Task
-        public ActionResult Tasks(int groupid)
+        public JsonResult Tasks()
         {
-            ViewBag.Group = groupid;
-            if (groupid == 1)
-            {
-                var task = _unitOfWork.Tasks.
-                    Tasks.
-                    Where(t => t.Closed != true && t.ApplicationUserId == User.Identity.GetUserId())
-                    .ToList();
-                return View("Tasks", task);
-            }
-            if (groupid > 1)
-            {
-                var closedGroupId = _unitOfWork.Groups.GetGroupId("Closed");
-                var task = _unitOfWork.Tasks.Tasks.Where(t => t.Closed != true && t.GroupId ==groupid && t.ApplicationUserId == User.Identity.GetUserId());
-
-                if (groupid == closedGroupId)
-                {
-                    task = _unitOfWork.Tasks.GetClosedTasks();
-                    return View("Tasks", task.Where(t => t.ApplicationUserId == User.Identity.GetUserId()));
-                }
-                return View("Tasks", task);
-            }
-            else
-            {
-                return RedirectToAction("Index", "Home");
-            }          
+            return Json(_unitOfWork.Tasks.Tasks.ToList(), JsonRequestBehavior.AllowGet);
         }
         [HttpPost]
         public ActionResult Add(string Title)

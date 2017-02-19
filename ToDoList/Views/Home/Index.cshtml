@@ -4,6 +4,8 @@
 
 
 <div  class="container" ng-controller="taskController">
+    <div class="row">
+        <div class="col-md-8">
     <div class="form-group">
         <form class="form-inline" novalidate>
             <input class="form-control" type="text" placeholder="Input your task" name="newtask" ng-model="title" ng-required="" />
@@ -17,22 +19,77 @@
         <thead>
             <tr>
                 <th>
+                    
+                </th>
+                <th>
                     Title
                 </th>
                 <th>
                     Due date
                 </th>
-                <th>
-                    Priority
-                </th>
                 </tr>
             </thead>       
             <tr ng-repeat="task in tasks">
+                <td><input type="checkbox" ng-model="task.isSelected" ng-click="selectTask(task)"></td>
                 <td>{{task.Title}}</td>
                 <td>{{task.DueDate | date}}</td>
-                <td>{{task.TaskPriority | number}}</td>
             </tr>
         
         </table>
-    
-</div>
+            </div>
+
+        <!--***********************VIEW FORM*******************-->
+        <div class="col-md-4" ng-model="currentTask.isSelected" ng-show="currentTask.isSelected">
+            <div class="form-group" ng-model="currentTask">
+                <label>Title</label>
+                {{currentTask.Title}}
+            </div>
+            <div class="form-group" ng-model="currentTask">
+                <label>Due date</label>
+                {{currentTask.DueDate | date}}
+            </div>
+            <div class="form-group" ng-model="currentTask">
+                <label>Time estimated</label>
+                {{currentTask.TimeEstimated}} hours
+            </div>
+            <div class="form-group" ng-model="currentTask">
+                <label>Priority</label>
+                {{currentTask.TaskPriority}}
+            </div>
+            <button class="btn btn-primary" ng-click="editTask(currentTask)">Edit</button>
+            </div >
+         <!--EDN VIEW FORM-->
+
+        <!--******************EDIT FORM*****************--> 
+        <div class="col-md-4" ng-model="forEdit" ng-show="forEdit">
+            <div class="form-group" ng-model="currentTask">
+                <label>Title</label>
+                <input  class="form-control" type="text" ng-model="currentTask.Title" />
+            </div>
+            <div class="form-group">
+                <div class="input-group date" id="datetimepicker1">
+                    <input type="text" class="form-control" ng-model="currentTask.DueDate" />
+                    <span class="input-group-addon">
+                        <span class="glyphicon glyphicon-calendar"></span>
+                    </span>
+                </div>
+                </div>
+                <div class="form-group" ng-model="currentTask">
+                    <label>Time estimated</label>
+                    <input class="form-control" type="text" ng-model="currentTask.TimeEstimated" />
+                </div>
+                <div class="form-group" ng-model="currentTask">
+                    <label>Priority</label>
+                    <input class="form-control" type="text" ng-model="currentTask.TaskPriority" />
+                </div>
+                <button class="btn btn-success" ng-click="update(currentTask)">Update</button>
+            </div>      
+    </div>
+    <!--END EDIT FORM-->   
+    </div>
+<script>
+    $().ready(function () {
+        //Идентификатор элемента HTML (например: #datetimepicker1), для которого необходимо инициализировать виджет "Bootstrap datetimepicker"
+        $('#datetimepicker1').datetimepicker();
+    });
+</script>

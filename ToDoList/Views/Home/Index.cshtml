@@ -4,13 +4,21 @@
 
 
 <div  class="container" ng-controller="taskController">
+    <div class="col-md-8">
+        <ul class="nav nav-tabs" ng-model="tab">
+            <li ng-class="{active : isSet(1)}"><a href="#" ng-click="setTab(1)">All</a></li>
+            <li ng-class="{active : isSet(2)}"><a href="#" ng-click="setTab(2)">Home</a></li>
+            <li ng-class="{active : isSet(3)}"><a href="#" ng-click="setTab(3)">Work</a></li>
+            <li ng-class="{active : isSet(4)}"><a href="#" ng-click="setTab(4)">Closed</a></li>
+        </ul>
+    </div>
     <div class="row">
         <div class="col-md-8">
     <div class="form-group">
-        <form class="form-inline" novalidate>
-            <input class="form-control" type="text" placeholder="Input your task" name="newtask" ng-model="title" ng-required="" />
-            <div ng-show="form.$submitted">
-                <div ng-show="form.newtask.$error.required">You cannot send empty field</div>
+        <form class="form-inline" name='taskform' novalidate>
+            <input class="form-control" type="text" placeholder="Input your task" name="newtask" ng-model="title" required />
+            <div ng-show="taskform.$submitted">
+                <div ng-show="taskform.newtask.$error.required">You cannot send empty field</div>
             </div>
              <button type="submit" class="btn btn-primary" ng-click="newTask()">Send</button>
         </form>
@@ -19,7 +27,9 @@
         <thead>
             <tr>
                 <th>
-                    
+                </th>
+                <th>
+                    <input type="checkbox" ng-model='isAllSelected' ng-click="selectAll(isAllSelected)">All
                 </th>
                 <th>
                     Title
@@ -28,12 +38,13 @@
                     Due date
                 </th>
                 </tr>
-            </thead>       
+            </thead>   
             <tr ng-repeat="task in tasks">
+                <td  id="color{{task.TaskId}}" ></td>
                 <td><input type="checkbox" ng-model="task.isSelected" ng-click="selectTask(task)"></td>
                 <td>{{task.Title}}</td>
                 <td>{{task.DueDate | date}}</td>
-            </tr>
+            </td>
         
         </table>
             </div>
@@ -54,11 +65,32 @@
             </div>
             <div class="form-group" ng-model="currentTask">
                 <label>Priority</label>
-                {{currentTask.TaskPriority}}
+                {{priority[currentTask.TaskPriority]}}
+            </div>
+            <div class="form-group" ng-model="currentTask" ng-show="currentTask.CommentCount != 0">
+                <label>Comments</label>
+                {{currentTask.CommentCount}}
+                    <label>Show</label>
+                    <input type="checkbox" ng-model="showComment" />              
             </div>
             <button class="btn btn-primary" ng-click="editTask(currentTask)">Edit</button>
+            <div ng-show="showComment">
+                <table>
+                    <tr ng-repeat="comment in currentTask.Comments">
+                        <td>{{comment.Text}}</td>
+                    </tr>
+                </table>
+            </div>
+            <div class="form-group" ng-model="currentTask">
+                <form class="form-inline" name='commentform' novalidate >
+                    <input class="form-control" type="text" placeholder="Enter your comment"  ng-model="newComment"  />                  
+                    <button type="submit" class="btn btn-primary" ng-click="addComment(currentTask,newComment)">Send</button>
+                </form>
+            </div> 
             </div >
-         <!--EDN VIEW FORM-->
+        
+        
+         <!--END VIEW FORM-->
 
         <!--******************EDIT FORM*****************--> 
         <div class="col-md-4" ng-model="forEdit" ng-show="forEdit">
@@ -80,12 +112,15 @@
                 </div>
                 <div class="form-group" ng-model="currentTask">
                     <label>Priority</label>
-                    <input class="form-control" type="text" ng-model="currentTask.TaskPriority" />
+                    <select class="form-control" ng-model="currentTask.TaskPriority">
+                        <option ng-repeat="p in priority" value="{{p}}">{{p}}</option>
+                    </select>
                 </div>
                 <button class="btn btn-success" ng-click="update(currentTask)">Update</button>
             </div>      
     </div>
-    <!--END EDIT FORM-->   
+    <!--END EDIT FORM--> 
+    
     </div>
 <script>
     $().ready(function () {

@@ -25,7 +25,17 @@ namespace ToDoList.Repositories
 
         public IEnumerable<TaskViewModel> Tasks {
             get {
-                return Mapper.Map<IEnumerable<MyTask>, IEnumerable<TaskViewModel>>(_context.MyTasks).ToList();
+                var tasks = _context.MyTasks.ToList();
+                foreach( var t in tasks)
+                {
+                    t.Comments = _context.Comments.Where(x => x.MyTaskId == t.MyTaskId).ToList();
+                }
+                var result = Mapper.Map<IEnumerable<MyTask>, IEnumerable<TaskViewModel>>(tasks);
+                foreach(var task in result)
+                {
+                    task.CommentCount = task.Comments.Count();
+                }                       
+                return result;
             }
         }
 

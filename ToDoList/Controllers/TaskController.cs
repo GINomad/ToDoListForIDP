@@ -22,10 +22,12 @@ namespace ToDoList.Controllers
             _unitOfWork = unitOfWork;
         }
         // GET: Task
-        public JsonResult Tasks()
+        [HttpPost]
+        public JsonResult Tasks(int groupid)
         {
-            return Json(_unitOfWork.Tasks.Tasks.ToList(), JsonRequestBehavior.AllowGet);
+            return Json(_unitOfWork.Tasks.Tasks.Where(t => t.GroupId == groupid), JsonRequestBehavior.AllowGet);
         }
+
         [HttpPost]
         public ActionResult Add(string Title)
         {

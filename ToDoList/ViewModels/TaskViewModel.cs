@@ -47,6 +47,7 @@ namespace ToDoList.ViewModels
             
             this.Title = Title;
             this.Closed = false;
+            this.GroupId = 1;
             TaskPriority = Priority.None;
             DueDate = DateTime.Today;
             _comments = new List<CommentViewModel>();

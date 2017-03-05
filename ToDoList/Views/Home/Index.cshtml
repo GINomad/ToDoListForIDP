@@ -1,9 +1,12 @@
 ﻿@using Microsoft.AspNet.Identity
 @using ToDoList.Models
 @using ToDoList.ViewModels
+@{
+Layout = "~/Views/Shared/_Layout.cshtml";
 
+}
 
-<div  class="container" ng-controller="taskController">
+<div  class="container" style="margin-top:25px" ng-controller="taskController">
     <div class="col-md-8">
         <ul class="nav nav-tabs" ng-model="tab">
             <li ng-class="{active : isSet(1)}"><a href="#" ng-click="setTab(1)">All</a></li>
@@ -14,16 +17,53 @@
     </div>
     <div class="row">
         <div class="col-md-8">
-    <div class="form-group">
-        <form class="form-inline" name='taskform' novalidate>
-            <input class="form-control" type="text" placeholder="Input your task" name="newtask" ng-model="title" required />
-            <div ng-show="taskform.$submitted">
-                <div ng-show="taskform.newtask.$error.required">You cannot send empty field</div>
+            <div class="panel panel-default" style="margin-bottom:0px">
+                <div class="panel-body">
+                    <button class="btn btn-sm btn-primary" ng-click="complete()">Complete</button>
+                    <div class="row">
+                        @Session["Responce"]
+                        <div style="display:inline"class="col-md-12">
+                            Select:<a href="#" ng-click="selectDueToday()">Due Today</a>
+                        </div>
+                        <div style="display:inline"class="dropdown">
+                            <button class="btn btn-xs btn-default dropdown-toggle" style="margin-top:-2px" type="button" data-toggle="dropdown">
+                                Other actions
+                                <span class="caret"></span>
+                            </button>
+                            <ul class="dropdown-menu">
+                                <li class="dropdown-header">Priorities</li>
+                                <li><a href="#" ng-click="setPriority('None')">None</a></li>
+                                <li><a href="#" ng-click="setPriority('Low')">Low</a></li>
+                                <li><a href="#" ng-click="setPriority('Normal')">Normal</a></li>
+                                <li><a href="#" ng-click="setPriority('High')">High</a></li>
+                                <li class="divider"></li>
+                                <li><a href="#" ng-click="deleteAll()">Delete all</a></li>
+                            </ul>
+                        </div>
+                    </div>                 
+                </div>
             </div>
-             <button type="submit" class="btn btn-primary" ng-click="newTask()">Send</button>
-        </form>
-    </div>
-    <table class="table">
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="panel panel-default" style="margin-bottom:0px">
+                        <div class="panel-body">
+                            <div class="form-group">
+                                <form class="form-inline" name='taskform' novalidate>
+                                    <div class="send-form-input col-md-11 ">
+                                        <input class="form-control" style="max-width:none" type="text" placeholder="Add a new task" name="newtask" ng-model="title" maxlength="70" required />
+                                        <div ng-show="taskform.$submitted">
+                                            <div ng-show="taskform.newtask.$error.required" style="color:red">You cannot send empty field</div>
+                                        </div>
+                                    </div>
+                                    <div class="send-form-btn col-md-1 "><button type="submit" class="btn btn-primary" ng-click="newTask()">Add</button></div>
+                                </form>
+                            </div>
+                        </div>                       
+                    </div>
+                    
+                </div>               
+            </div>                       
+    <table class="table table-responsive">
         <thead>
             <tr>
                 <th>
@@ -39,92 +79,112 @@
                 </th>
                 </tr>
             </thead>   
-            <tr ng-repeat="task in tasks">
-                <td  id="color{{task.TaskId}}" ></td>
-                <td><input type="checkbox" ng-model="task.isSelected" ng-click="selectTask(task)"></td>
-                <td>{{task.Title}}</td>
-                <td>{{task.DueDate | date}}</td>
+            <tr  style="max-width:inherit"id="row{{task.TaskId}}" ng-repeat="task in tasks">
+                <td style="width:2%"  id="color{{task.TaskId}}" ></td>
+                <td id="rowC{{task.TaskId}}"><input type="checkbox" ng-model="task.isSelected" ng-click="selectTask(task)"></td>
+                <td id="rowT{{task.TaskId}}">{{task.Title}}</td>
+                <td id="rowD{{task.TaskId}}">{{task.DueDate | date}}</td>
             </td>
         
         </table>
             </div>
-
+        <div class="col-md-4" ng-show="currentTask.isSelected">
+            <ul class="nav nav-tabs" ng-model="detailsTab">
+                <li ng-class="{active : isDetailsSet(1)}"><a href="#" ng-click="setDetailsTab(1)">View</a></li>
+                <li ng-show="tab != 4" ng-class="{active : isDetailsSet(2)}"><a href="#" ng-click="setDetailsTab(2)">Edit</a></li>
+            </ul>
+        </div>
         <!--***********************VIEW FORM*******************-->
-        <div class="col-md-4" ng-model="currentTask.isSelected" ng-show="currentTask.isSelected">
-            <div class="form-group" ng-model="currentTask">
-                <label>Title</label>
-                {{currentTask.Title}}
-            </div>
-            <div class="form-group" ng-model="currentTask">
-                <label>Due date</label>
-                {{currentTask.DueDate | date}}
-            </div>
-            <div class="form-group" ng-model="currentTask">
-                <label>Time estimated</label>
-                {{currentTask.TimeEstimated}} hours
-            </div>
-            <div class="form-group" ng-model="currentTask">
-                <label>Priority</label>
-                {{priority[currentTask.TaskPriority]}}
-            </div>
-            <div class="form-group" ng-model="currentTask" ng-show="currentTask.CommentCount != 0">
-                <label>Comments</label>
-                {{currentTask.CommentCount}}
-                    <label>Show</label>
-                    <input type="checkbox" ng-model="showComment" />              
-            </div>
-            <button class="btn btn-primary" ng-click="editTask(currentTask)">Edit</button>
-            <div ng-show="showComment">
-                <table>
-                    <tr ng-repeat="comment in currentTask.Comments">
-                        <td>{{comment.Text}}</td>
-                    </tr>
-                </table>
-            </div>
-            <div class="form-group" ng-model="currentTask">
-                <form class="form-inline" name='commentform' novalidate >
-                    <input class="form-control" type="text" placeholder="Enter your comment"  ng-model="newComment"  />                  
-                    <button type="submit" class="btn btn-primary" ng-click="addComment(currentTask,newComment)">Send</button>
-                </form>
-            </div> 
-            </div >
-        
-        
-         <!--END VIEW FORM-->
+        <div class="col-md-4" ng-model="currentTask.isSelected" ng-show="currentTask.isSelected && detailsTab == 1">
+            <div class="panel panel-default" style="margin-bottom:0px">
+                <div class="panel-body details-panel">
+                    <div class="row">
+                        <div class="col-md-4"></div>
+                        <div class="col-md-8">
+                            <div class="form-group" ng-model="currentTask">
+                                <label style="color:blue;text-transform:uppercase;max-width:100%;overflow:auto">{{currentTask.Title}}</label>
+                            </div>
+                        </div>                       
+                    </div>
+                    <div class="form-group" ng-model="currentTask">
+                        <label>Due date</label>
+                        {{currentTask.DueDate | date}}
+                    </div>
+                    <div class="form-group" ng-model="currentTask">
+                        <label>Time estimated</label>
+                        {{currentTask.TimeEstimated}} hours
+                    </div>
+                    <div class="form-group" ng-model="currentTask">
+                        <label>Priority</label>
+                        {{priority[currentTask.TaskPriority]}}
+                    </div>
+                    <div class="form-group" ng-model="currentTask" ng-show="currentTask.CommentCount != 0">
+                        <label>Comments</label>
+                        {{currentTask.CommentCount}}
+                        <label>Show</label>
+                        <input type="checkbox" ng-model="showComment" />
+                    </div>
+                    <div ng-show="showComment">
+                        <table>
+                            <tr ng-repeat="comment in currentTask.Comments">
+                                <td>{{comment.Text}}</td>
+                            </tr>
+                        </table>
+                    </div>
+                    <div ng-if="tab != 4" class="form-group" ng-model="currentTask">
+                        <form class="form-inline" name='commentform' novalidate>
+                            <div class="send-form-input col-md-6 ">
+                                <input class="form-control" type="text" placeholder="Enter your comment" ng-model="newComment" />
+                            </div>
+                            <div class="send-form-btn" col-md-6>
+                                <button type="submit" class="btn btn-primary" ng-click="addComment(currentTask,newComment)">Submit</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+             </div>
+          </div>
 
-        <!--******************EDIT FORM*****************--> 
-        <div class="col-md-4" ng-model="forEdit" ng-show="forEdit">
-            <div class="form-group" ng-model="currentTask">
-                <label>Title</label>
-                <input  class="form-control" type="text" ng-model="currentTask.Title" />
-            </div>
-            <div class="form-group">
-                <div class="input-group date" id="datetimepicker1">
-                    <input type="text" class="form-control" ng-model="currentTask.DueDate" />
-                    <span class="input-group-addon">
-                        <span class="glyphicon glyphicon-calendar"></span>
-                    </span>
+
+                <!--END VIEW FORM-->
+                <!--******************EDIT FORM*****************-->
+        <div class="col-md-4" ng-model="forEdit" ng-show="detailsTab == 2 && tab != 4">
+            <div class="panel panel-default" style="margin-bottom:0px">
+                <div class="panel-body details-panel">
+                    <div class="form-group" ng-model="currentTask">
+                        <label>Title</label>
+                        <input class="form-control" type="text" ng-model="currentTask.Title" />
+                    </div>
+                    <div class="form-group">
+                        <input style="display:inline" type="text" class="form-control" ng-model="currentTask.DueDate" />
+                        <span style="display:inline" class="glyphicon glyphicon-calendar"></span>
+                    </div>
+                    <div class="form-group" ng-model="currentTask">
+                        <label>Time estimated</label>
+                        <input class="form-control" type="text" ng-model="currentTask.TimeEstimated" />
+                    </div>
+                    <div style="display:inline" class="dropdown">
+                        <button class="btn btn-default dropdown-toggle" style="margin-top:-2px" type="button" data-toggle="dropdown">
+                            Select group
+                            <span class="caret"></span>
+                        </button>
+                        <ul class="dropdown-menu">
+                            <li class="dropdown-header">Groups</li>
+                            <li><a href="#" ng-click="setGroup(2)">Home</a></li>
+                            <li><a href="#" ng-click="setGroup(3)">Work</a></li>
+                        </ul>
+                    </div>
+                    <div class="form-group" ng-model="currentTask">
+                        <label>Priority</label>
+                        <select class="form-control" ng-model="currentTask.TaskPriority">
+                            <option ng-repeat="p in priority" value="{{p}}">{{p}}</option>
+                        </select>
+                    </div>
+                    <button class="btn btn-success" ng-click="update(currentTask)">Update</button>
                 </div>
-                </div>
-                <div class="form-group" ng-model="currentTask">
-                    <label>Time estimated</label>
-                    <input class="form-control" type="text" ng-model="currentTask.TimeEstimated" />
-                </div>
-                <div class="form-group" ng-model="currentTask">
-                    <label>Priority</label>
-                    <select class="form-control" ng-model="currentTask.TaskPriority">
-                        <option ng-repeat="p in priority" value="{{p}}">{{p}}</option>
-                    </select>
-                </div>
-                <button class="btn btn-success" ng-click="update(currentTask)">Update</button>
-            </div>      
-    </div>
-    <!--END EDIT FORM--> 
-    
-    </div>
-<script>
-    $().ready(function () {
-        //Идентификатор элемента HTML (например: #datetimepicker1), для которого необходимо инициализировать виджет "Bootstrap datetimepicker"
-        $('#datetimepicker1').datetimepicker();
-    });
-</script>
+             </div>
+          </div>
+        </div>
+            <!--END EDIT FORM-->
+
+        </div>

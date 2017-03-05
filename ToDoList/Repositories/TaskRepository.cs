@@ -103,7 +103,7 @@ namespace ToDoList.Repositories
         }
         
         public void SetPriority(int id, string priority)
-        {
+        {            
             var task = _context.MyTasks.FirstOrDefault(t => t.MyTaskId == id); 
             if(task != null)
             {

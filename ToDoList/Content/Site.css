@@ -54,4 +54,30 @@ textarea {
     border-width:1px;   
     border-color:black !important;
     background-color:deepskyblue;
-}    
+}
+.row-selected{
+background-color:#fff9cd;
+}
+.send-form-input{
+    padding-left:0px!important;
+    padding-right:0px!important;
+    margin-bottom:10px!important;
+}
+.send-form-btn{
+    padding-left:2px!important;
+    margin-bottom:10px!important;
+} 
+.nav-tabs>li>a {
+    margin-right: 2px!important;
+    line-height: 0.428571!important;
+    border: 1px solid transparent!important;
+    border-radius: 10px 10px 0 0!important;
+} 
+.nav-tabs>li.active>a{
+    background-color:cornflowerblue!important;
+    color:white!important;
+}  
+.details-panel{
+    background-color: rgba(199, 194, 206, 0.25);
+}
+}

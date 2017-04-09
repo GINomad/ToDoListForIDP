@@ -28,17 +28,17 @@ namespace ToDoList.Controllers
             var userid = User.Identity.GetUserId();
             if (groupid == 4)
             {
-                return  Json(_unitOfWork.Tasks.GetClosedTasks().Where(t => t.ApplicationUserId == userid), JsonRequestBehavior.AllowGet);
+                return  Json(_unitOfWork.Tasks.GetClosedTasks().Where(t => t.Users.Any(x=> x.Id == userid)), JsonRequestBehavior.AllowGet);
             }            
             else
             {
                 if(groupid == 1)
                 {
-                    return Json(_unitOfWork.Tasks.Tasks.Where(t => t.Closed != true && t.ApplicationUserId == userid), JsonRequestBehavior.AllowGet);
+                    return Json(_unitOfWork.Tasks.Tasks.Where(t => t.Closed != true && t.Users.Any(x => x.Id == userid)), JsonRequestBehavior.AllowGet);
                 }
                 else
                 {
-                    return Json(_unitOfWork.Tasks.Tasks.Where(t => t.GroupId == groupid && t.Closed != true && t.ApplicationUserId == userid), JsonRequestBehavior.AllowGet);
+                    return Json(_unitOfWork.Tasks.Tasks.Where(t => t.GroupId == groupid && t.Closed != true && t.Users.Any(x => x.Id == userid)), JsonRequestBehavior.AllowGet);
                 }
                 
             }

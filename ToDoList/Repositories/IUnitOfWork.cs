@@ -7,5 +7,7 @@
         ITaskRepository Tasks { get; }
 
         IGroupRepository Groups { get; }
+
+        IUserRepository Users { get; }
     }
 }

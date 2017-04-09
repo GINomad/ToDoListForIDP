@@ -77,6 +77,7 @@ Layout = "~/Views/Shared/_Layout.cshtml";
                 <th>
                     Due date
                 </th>
+                <th></th>
                 </tr>
             </thead>   
             <tr  style="max-width:inherit"id="row{{task.TaskId}}" ng-repeat="task in tasks">
@@ -84,7 +85,13 @@ Layout = "~/Views/Shared/_Layout.cshtml";
                 <td id="rowC{{task.TaskId}}"><input type="checkbox" ng-model="task.isSelected" ng-click="selectTask(task)"></td>
                 <td id="rowT{{task.TaskId}}">{{task.Title}}</td>
                 <td id="rowD{{task.TaskId}}">{{task.DueDate | date}}</td>
-            </td>
+                <td style="cursor:pointer"><a ng-click="getUsers(task.TaskId)">Assign to:</a>
+                    <div ng-show="showSelect && currentTaskId == task.TaskId">
+                      <select ng-options="user as user.userName for user in users track by user.id" ng-model="assigned">
+
+                      </select>
+                    </div>
+                </td>
         
         </table>
             </div>
@@ -99,8 +106,7 @@ Layout = "~/Views/Shared/_Layout.cshtml";
             <div class="panel panel-default" style="margin-bottom:0px">
                 <div class="panel-body details-panel">
                     <div class="row">
-                        <div class="col-md-4"></div>
-                        <div class="col-md-8">
+                        <div class="col-md-12">
                             <div class="form-group" ng-model="currentTask">
                                 <label style="color:blue;text-transform:uppercase;max-width:100%;overflow:auto">{{currentTask.Title}}</label>
                             </div>

@@ -24,8 +24,8 @@ namespace ToDoList.ViewModels
 
         public bool isSelected { get; set; }
 
-        public string ApplicationUserId { get; set; }
-
+        // public string ApplicationUserId { get; set; }
+        public IEnumerable<UserViewModel> Users { get; set; }
         public IEnumerable<CommentViewModel> Comments
         {
             get { return _comments; }
@@ -41,6 +41,7 @@ namespace ToDoList.ViewModels
         public TaskViewModel()
         {
             _comments = new List<CommentViewModel>();
+            Users = new List<UserViewModel>();
         }
         public TaskViewModel(string Title)
         {

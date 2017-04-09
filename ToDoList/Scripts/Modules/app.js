@@ -13,6 +13,10 @@ todoApp.controller("taskController", function ($scope, $http,$filter) {
     $scope.detailsTab = 1;
     $scope.date;
     $scope.priority = ['None', 'High', 'Normal', 'Low'];
+    $scope.users = [];
+    $scope.showSelect = false;
+    $scope.selected = [];
+    $scope.currentTaskId;
     /* Методы CRUD-операций для тасок*/
     var _getTasks = function (groupid) {
         $http.post("task/tasks", {'groupid': groupid}).then(function (responce) {
@@ -24,6 +28,19 @@ todoApp.controller("taskController", function ($scope, $http,$filter) {
             }
         });
     };
+
+    var _getUsers = function (taskId) {
+        if(taskId != $scope.currentTaskId)
+        {
+            $scope.showSelect = false;
+        }
+        $scope.currentTaskId = taskId;
+        $scope.showSelect = !$scope.showSelect;
+        $http.get("api/user/getUsers/"+taskId).then(function (responce) {
+            $scope.users = responce.data;
+        })
+    }
+    $scope.getUsers = _getUsers;
     $scope.getTasks = _getTasks;
 
     $scope.setTab = function (newTab) {

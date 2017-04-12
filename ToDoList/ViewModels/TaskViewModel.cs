@@ -23,6 +23,8 @@ namespace ToDoList.ViewModels
         public bool Closed { get; set; }
 
         public bool isSelected { get; set; }
+        
+        public bool HasAssignedUsers { get; set; }
 
         // public string ApplicationUserId { get; set; }
         public IEnumerable<UserViewModel> Users { get; set; }

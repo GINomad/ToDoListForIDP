@@ -28,7 +28,17 @@ namespace ToDoList.Controllers
             var groups = _unitOfWork.Groups.Groups.ToList();
             return PartialView("GroupTabsPartial", groups);
         }
-        public ActionResult Index(string groupid)
+        public ActionResult Index()
+        {
+            return View("Index");
+        }
+
+      /*  public ActionResult Tasks()
+        {
+            return View("Index");
+        }*/
+
+        public ActionResult Statistic()
         {
             return View();
         }

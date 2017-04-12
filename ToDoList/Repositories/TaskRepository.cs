@@ -73,7 +73,7 @@ namespace ToDoList.Repositories
            
         }
 
-        public void Assign(int taskId, string userId)
+        public void Assign(string userId, int taskId)
         {
             var task = _context.MyTasks.First(x => x.MyTaskId == taskId);
             if(task != null)
@@ -85,6 +85,7 @@ namespace ToDoList.Repositories
                     if (user != null)
                     {
                         task.Users.Add(user);
+                        _context.SaveChanges();
                     }                   
                 }
             }

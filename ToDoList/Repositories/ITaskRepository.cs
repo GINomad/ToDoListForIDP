@@ -14,5 +14,6 @@ namespace ToDoList.Repositories
         void Update(TaskViewModel model);
         IEnumerable<TaskViewModel> GetClosedTasks();
         void SetPriority(int id, string priority);
+        void Assign(string userId, int taskId);
     }
 }

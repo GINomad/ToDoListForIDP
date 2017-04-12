@@ -1,0 +1,21 @@
+﻿
+@{
+    ViewBag.Title = "Statistic";
+}
+<div ng-controller="statController">
+    <h2>Task Statistic</h2>
+    <div ng-repeat="stat in statisticInfo">
+        <div class="row">
+            <div class="col-md-2">
+                {{stat.userName}}
+            </div>
+            <div class="col-md-2">
+                : {{stat.taskCount}} Tasks
+            </div>
+        </div>
+         
+    </div>
+</div>
+
+
+

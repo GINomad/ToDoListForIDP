@@ -120,5 +120,12 @@ namespace ToDoList.Controllers
             }
             return RedirectToAction("Index","Home", new {groupid = 4 });
         }
+
+        [HttpPost]
+        public ActionResult Assign(TaskAssignmentModel model)
+        {
+            _unitOfWork.Tasks.Assign(model.UserId, model.TaskId);
+            return RedirectToAction("Index", "Home");
+        }
     }
 }

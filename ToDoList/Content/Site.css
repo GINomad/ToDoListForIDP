@@ -80,4 +80,7 @@ background-color:#fff9cd;
 .details-panel{
     background-color: rgba(199, 194, 206, 0.25);
 }
+.task-icon{
+    background-image: url('Icons/tasks.ico');
+    background-size:auto;
 }

@@ -1,6 +1,12 @@
-﻿var todoApp = angular.module('todoApp', []);
+﻿var todoApp = angular.module('todoApp', []).run(function ($rootScope,$http)
+{
+    $rootScope.url;
+    $http.get('/api/base/getConfiguration').then(function(responce){
+        $rootScope.url = responce.data;
+});
+});
 
-todoApp.controller("taskController", function ($scope, $http,$filter) {
+todoApp.controller("taskController", function ($rootScope,$scope, $http,$filter) {
     /*Модели*/
     $scope.tasks = {};
     $scope.title = "";
@@ -17,9 +23,12 @@ todoApp.controller("taskController", function ($scope, $http,$filter) {
     $scope.showSelect = false;
     $scope.selected = [];
     $scope.currentTaskId;
+    $scope.statisticInfo = [];
+
+
     /* Методы CRUD-операций для тасок*/
     var _getTasks = function (groupid) {
-        $http.post("task/tasks", {'groupid': groupid}).then(function (responce) {
+        $http.post("/task/tasks", {'groupid': groupid}).then(function (responce) {
             $scope.tasks = responce.data;
             for(var i=0;i<responce.data.length;i++)
             {
@@ -42,20 +51,23 @@ todoApp.controller("taskController", function ($scope, $http,$filter) {
     }
     $scope.getUsers = _getUsers;
     $scope.getTasks = _getTasks;
-
+   
     $scope.setTab = function (newTab) {
         $scope.tab = newTab;
         $scope.currentTask.isSelected = false;
         $scope.getTasks($scope.tab);
     };
+
     $scope.setDetailsTab = function (newTab)
     {
         $scope.detailsTab = newTab;
 
     }
+
     $scope.isSet = function (tabNum) {
         return $scope.tab === tabNum;
     };
+
     $scope.isDetailsSet = function(tabNum)
     {
         return $scope.detailsTab === tabNum;
@@ -64,14 +76,28 @@ todoApp.controller("taskController", function ($scope, $http,$filter) {
     $scope.newTask = function () {
         if ($scope.title != "")
         {
-            $http.post('task/add', { 'Title': $scope.title })
+            $http.post($rootScope.url + '/task/add', { 'Title': $scope.title })
                       .then(function ($scope) { location.reload(); });
-        }
-       
+        }     
     }
     $scope.setGroup = function(groupid)
     {
         $scope.currentTask.GroupId = groupid;
+    }
+
+    $scope.assign = function (index)
+    {
+        $http.post("task/assign", { userId: $scope.tasks[index].assignedUser, taskId: $scope.tasks[index].TaskId });
+        $scope.tasks[index].assignedUser = "";
+        $scope.tasks[index].HasAssignedUsers = false;
+        $scope.showSelect = !$scope.showSelect;
+
+    }
+
+    $scope.changeAssignment = function(index,user)
+    {
+        $scope.tasks[index].HasAssignedUsers = true;
+        $scope.tasks[index].assignedUser = user.id;
     }
 
     $scope.complete = function () {
@@ -181,4 +207,15 @@ todoApp.controller("taskController", function ($scope, $http,$filter) {
         }              
     }
     $scope.setTab(1);
+});
+
+todoApp.controller("statController", function ($rootScope, $scope, $http, $filter) {
+
+    $scope.statisticInfo;
+    $scope.getStatistic = function () {
+        $http.get('/api/user/getStatistic').then(function (responce) {
+            $scope.statisticInfo = responce.data;
+        });
+    }
+    $scope.getStatistic();
 });

@@ -25,7 +25,7 @@ namespace ToDoList.Controllers
         [HttpPost]
         public JsonResult Tasks(int groupid)
         {
-            var userid = User.Identity.GetUserId();
+           var userid =  HttpContext.User.Identity.GetUserId();
             if (groupid == 4)
             {
                 return  Json(_unitOfWork.Tasks.GetClosedTasks().Where(t => t.Users.Any(x=> x.Id == userid)), JsonRequestBehavior.AllowGet);

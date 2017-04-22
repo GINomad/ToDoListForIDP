@@ -9,8 +9,8 @@ using ToDoList.ViewModels;
 
 namespace ToDoList.Controllers
 {
-    [System.Web.Http.RoutePrefix("api/tasks")]
-    public class TaskApiController : ApiController
+    [System.Web.Http.RoutePrefix("api/task")]
+    public class TaskApiController : BaseApiController
     {
         private readonly IUnitOfWork _unitOfWork;
 
@@ -18,6 +18,8 @@ namespace ToDoList.Controllers
         {
             _unitOfWork = unitOfWork;
         }
+        [System.Web.Http.HttpGet]
+        [System.Web.Http.Route("api/task/gettasks/{groupid}")]
         public IEnumerable<TaskViewModel> Get()
         {
             var model = _unitOfWork.Tasks.Tasks.ToList();

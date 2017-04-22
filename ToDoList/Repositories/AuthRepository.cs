@@ -24,7 +24,7 @@ namespace ToDoList.Repositories
 
         }
 
-        public async Task<IdentityResult> RegisterUser(UserViewModel userModel)
+        public async Task<IdentityResult> RegisterUser(RegisterModel userModel)
         {
             ApplicationUser user = new ApplicationUser
             {

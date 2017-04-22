@@ -25,7 +25,7 @@ namespace ToDoList.Controllers
         // POST api/Account/Register
         [AllowAnonymous]
         [Route("Register")]
-        public async Task<IHttpActionResult> Register(UserViewModel userModel)
+        public async Task<IHttpActionResult> Register(RegisterModel userModel)
         {
             if (!ModelState.IsValid)
             {

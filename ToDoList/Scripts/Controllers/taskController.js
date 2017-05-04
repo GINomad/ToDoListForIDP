@@ -21,8 +21,8 @@ todoApp.controller("taskController",function ($rootScope, $scope, $http, $filter
 
 
     /* Методы CRUD-операций для тасок*/
-    var _getTasks = function (groupid) {
-        $http.post(serviceBase + "task/tasks", {groupid:groupid}).then(function (responce) {
+    var _getTasks = function (groupid) {       
+        $http.get(serviceBase + "api/task/gettasks/" + groupid).then(function (responce) {
             $scope.tasks = responce.data;
             for(var i=0;i<responce.data.length;i++)
             {
@@ -70,7 +70,7 @@ todoApp.controller("taskController",function ($rootScope, $scope, $http, $filter
     $scope.newTask = function () {
         if ($scope.title != "")
         {
-            $http.post(serviceBase + 'task/add', { 'Title': $scope.title })
+            $http.post(serviceBase + 'api/taskapi/add?title='+ $scope.title)
                       .then(function ($scope) { location.reload(); });
         }     
     }
@@ -81,7 +81,11 @@ todoApp.controller("taskController",function ($rootScope, $scope, $http, $filter
 
     $scope.assign = function (index)
     {
-        $http.post("task/assign", { userId: $scope.tasks[index].assignedUser, taskId: $scope.tasks[index].TaskId });
+        $http({
+            method: 'POST',
+            url: serviceBase + 'api/taskapi/assign',
+            data: JSON.stringify({ userId: $scope.tasks[index].assignedUser, taskId: $scope.tasks[index].TaskId })
+        });           
         $scope.tasks[index].assignedUser = "";
         $scope.tasks[index].HasAssignedUsers = false;
         $scope.showSelect = !$scope.showSelect;
@@ -91,7 +95,7 @@ todoApp.controller("taskController",function ($rootScope, $scope, $http, $filter
     $scope.changeAssignment = function(index,user)
     {
         $scope.tasks[index].HasAssignedUsers = true;
-        $scope.tasks[index].assignedUser = user.id;
+        $scope.tasks[index].assignedUser = user.Id;
     }
 
     $scope.complete = function () {
@@ -102,7 +106,11 @@ todoApp.controller("taskController",function ($rootScope, $scope, $http, $filter
                 selectedTasks.push(value.TaskId);
             }
         });
-        $http.post("task/complete", { 'id': selectedTasks }).then(function () { location.reload(); });
+        $http({
+            method: 'POST',
+            url: serviceBase + 'api/taskapi/complete',
+            data: JSON.stringify({ 'ids': selectedTasks})
+        }).then(function () { location.reload(); });
     }
     $scope.setColor = function (task)
     {
@@ -139,7 +147,11 @@ todoApp.controller("taskController",function ($rootScope, $scope, $http, $filter
                 selectedTasks.push(value.TaskId);
             }
         });
-        $http.post("task/setPriorityAll", { 'id': selectedTasks, 'priority': priority }).then(function () { location.reload(); });
+        $http({
+            method: 'POST',
+            url: serviceBase + 'api/taskapi/changePriority',
+            data: JSON.stringify({'ids':selectedTasks, 'priority': priority})
+        }).then(function () { location.reload() });
     }
     $scope.selectDueToday = function () {
         for( var i = 0; i<$scope.tasks.length;i++)
@@ -162,8 +174,13 @@ todoApp.controller("taskController",function ($rootScope, $scope, $http, $filter
                 selectedTasks.push(value.TaskId);
             }
         });
-        if(selectedTasks.length != 0)
-        $http.post("task/deleteAll", { 'id': selectedTasks}).then(function () { location.reload(); });
+        if (selectedTasks.length != 0) {
+            $http({
+                method: 'POST',
+                url: serviceBase + 'api/taskapi/delete',
+                data: JSON.stringify({ 'ids': selectedTasks })
+            }).then(function () { location.reload(); });
+        }            
     }
 
     $scope.selectTask = function (task) {
@@ -175,15 +192,23 @@ todoApp.controller("taskController",function ($rootScope, $scope, $http, $filter
     }
 
     $scope.update = function (currentTask) {
-        $http.post('task/edit', { 'model': currentTask }).then(function () { location.reload(); });
+        $http({
+            method: "POST",
+            url: serviceBase + 'api/taskapi/edit',
+            data: JSON.stringify(currentTask)
+        }).then(function () { location.reload();});
     }
     $scope.addComment = function (currentTask, newComment) {
         var task = currentTask;
         var comment = {
-            Text: newComment,
-            TaskId: currentTask.TaskId
+            text: newComment,
+            taskId: currentTask.TaskId
         };
-        $http.post('comment/addComment', { 'model': comment }).then(function () { location.reload(); });
+        $http({
+            method: 'POST',
+            url: serviceBase + 'api/comment/addComment',
+            data: JSON.stringify({ 'taskId': comment.taskId, 'text': comment.text })
+        }).then(function () { location.reload(); });
     }
     $scope.selectAll = function (isAllSelected) {
         if (isAllSelected)

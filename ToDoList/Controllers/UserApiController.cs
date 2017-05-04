@@ -4,6 +4,7 @@ using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Web.Http;
+using ToDoList.Models;
 using ToDoList.Repositories;
 
 namespace ToDoList.Controllers
@@ -13,9 +14,9 @@ namespace ToDoList.Controllers
     {
         private readonly IUnitOfWork _unitOfWork;
       
-        public UserApiController(IUnitOfWork unitOfWork)
+        public UserApiController()
         {
-            _unitOfWork = unitOfWork;
+            _unitOfWork = new UnitOfWork(new ApplicationDbContext());
         }
 
         [HttpGet]

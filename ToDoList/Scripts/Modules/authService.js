@@ -31,7 +31,6 @@ todoApp.factory('authService', ['$http', '$q', 'localStorageService', function (
 
             _authentication.isAuth = true;
             _authentication.userName = loginData.userName;
-
             deferred.resolve(response);
 
         },function (err, status) {
@@ -49,6 +48,7 @@ todoApp.factory('authService', ['$http', '$q', 'localStorageService', function (
 
         _authentication.isAuth = false;
         _authentication.userName = "";
+        location.reload();
 
     };
 

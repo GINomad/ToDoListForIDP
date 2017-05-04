@@ -46,6 +46,7 @@ namespace ToDoList.Repositories
                     var users = (task.Users.Select(x => new UserViewModel { Id = x.Id, UserName = x.UserName }));
                     model.Users = users;
                     model.CommentCount = task.Comments.Count;
+                    model.Comments = Mapper.Map<List<Comment>, List<CommentViewModel>>(task.Comments.ToList());
                     result.Add(model);
 
                 }

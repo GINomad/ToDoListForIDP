@@ -27,6 +27,7 @@
     <script src="~/Scripts/moment.min.js"></script>
     <script src="~/Scripts/bootstrap-datetimepicker.min.js"></script>
     <script src="~/Scripts/Modules/authService.js"></script>
+    <script src="~/Scripts/Controllers/headerController.js"></script>
     
     
 </head>
@@ -43,8 +44,8 @@
             </div>
             <div class="navbar-collapse collapse">
                 <ul class="nav navbar-nav">
-                    <li>@Html.ActionLink("Home", "Index", "Home")</li>
-                    <li>@Html.ActionLink("Statistic", "Statistic", "Home")</li>                   
+                    <li><a href="#!home" role="button" style="cursor:pointer">Home</a></li>
+                    <li><a href="#!statistic" role="button" style="cursor:pointer">Statistic</a></li>                   
                 </ul>
                 @Html.Partial("_LoginPartial")
             </div>

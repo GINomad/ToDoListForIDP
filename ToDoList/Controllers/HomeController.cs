@@ -16,27 +16,15 @@ namespace ToDoList.Controllers
     //All models need to refactor
     public class HomeController : Controller
     {
-        private readonly IUnitOfWork _unitOfWork;
-
-        public HomeController(IUnitOfWork unitOfWork)
-        {
-            _unitOfWork = unitOfWork;           
-        }
-        [HttpGet]
-        public ActionResult GetGroups()
-        {
-            var groups = _unitOfWork.Groups.Groups.ToList();
-            return PartialView("GroupTabsPartial", groups);
-        }
         public ActionResult Index()
         {
-            return View("Index");
+            return View("Index1");
         }
 
-      /*  public ActionResult Tasks()
+        public ActionResult Tasks()
         {
             return View("Index");
-        }*/
+        }
 
         public ActionResult Statistic()
         {

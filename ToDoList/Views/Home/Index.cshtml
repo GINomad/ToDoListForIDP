@@ -1,394 +1,192 @@
 ﻿@using Microsoft.AspNet.Identity
 @using ToDoList.Models
 @using ToDoList.ViewModels
+@{
 
-@{
 }
-@{
-    Html.RenderAction("GetGroups","Home");
-}
-<h3>@Session["Response"]</h3>
-<div class="panel panel-default">
-    <div class="panel-body">
-        <div class="container">
-            <div class="row">
-                <div class="col-xs-12">
-                    @{
-                        Html.RenderPartial($"_AddTaskPartial", new TaskViewModel()
-                        {
-                            TaskId = 0,
-                            Closed = false,
-                            Title = "",
-                            TaskPriority = Priority.None,
-                        });
-                    }
+
+<div class="container" style="margin-top:25px">
+    <div class="col-md-8">
+        <ul class="nav nav-tabs"style="cursor:pointer">
+            <li class="active"> <a>All</a></li>
+            <li><a>Home</a></li>
+            <li><a>Work</a></li>
+            <li><a>Closed</a></li>
+        </ul>
+    </div>
+    <div class="row">
+        <div class="col-md-8">
+            <div class="panel panel-default" style="margin-bottom:0px">
+                <div class="panel-body">
+                    <button class="btn btn-sm btn-primary">Complete</button>
+                    <div class="row">
+                        @Session["Responce"]
+                        <div style="display:inline"class="col-md-12">
+                            Select:<a href="javascript:;">Due Today</a>
+                        </div>
+                        <div style="display:inline"class="dropdown">
+                            <button class="btn btn-xs btn-default dropdown-toggle" style="margin-top:-2px" type="button" data-toggle="dropdown">
+                                Other actions
+                                <span class="caret"></span>
+                            </button>
+                            <ul class="dropdown-menu">
+                                <li class="dropdown-header">Priorities</li>
+                                <li><a href="javascript:;">None</a></li>
+                                <li><a href="javascript:;">Low</a></li>
+                                <li><a href="javascript:;">Normal</a></li>
+                                <li><a href="javascript:;">High</a></li>
+                                <li class="divider"></li>
+                                <li><a href="javascript:;">Delete selected</a></li>
+                            </ul>
+                        </div>
+                    </div>                 
                 </div>
             </div>
             <div class="row">
-             <div class="col-xs-8">
-                <div class="tab-content">
-                    <div role="tabpanel" class="tab-pane fade in active" id="panel_1">
-                            @{
-                                Html.RenderAction("Tasks", "Task", new { groupid = 1} );
-                            }
+                <div class="col-md-12">
+                    <div class="panel panel-default" style="margin-bottom:0px">
+                        <div class="panel-body">
+                            <div class="form-group">
+                                <form class="form-inline" name='taskform' novalidate>
+                                    <div class="send-form-input col-md-11 ">
+                                        <input class="form-control" style="max-width:none" type="text" placeholder="Add a new task" name="newtask" maxlength="70" required />                                       
+                                    </div>
+                                    <div class="send-form-btn col-md-1 "><button type="submit" class="btn btn-primary">Add</button></div>
+                                </form>
+                            </div>
+                        </div>                       
                     </div>
-                    <div role="tabpanel" class="tab-pane fade" id="panel_2">
-                        @{
-                            Html.RenderAction("Tasks", "Task", new {groupid = 2});
-                        }
-                    </div>
-                    <div role="tabpanel" class="tab-pane fade" id="panel_3">
-                        @{
-                            Html.RenderAction("Tasks", "Task", new { groupid = 3 });
-                        }
-                    </div>
-                    <div role="tabpanel" class="tab-pane fade" id="panel_4">
-                        @{
-                            Html.RenderAction("Tasks", "Task", new { groupid = 4 });
-                        }
-                    </div>
-
                     
-                </div>
-            </div>              
-                <div class="col-lg-4">
-                    @Html.Partial("Edit", new TaskViewModel() {Comments = new List<CommentViewModel>()})
-                    @{Html.RenderPartial("EditPost", new TaskViewModel());}
-                </div>
+                </div>               
+            </div>                       
+            <table class="table table-responsive">
+                <thead>
+                    <tr>
+                        <th>
+                        </th>
+                        <th>
+                            <input type="checkbox" data-bind="checked:isAllSelected, event:{click: selectAll}">All
+                        </th>
+                        <th>
+                            Title
+                        </th>
+                        <th>
+                            Due date
+                        </th>
+                        <th></th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody data-bind="foreach: tasks">
+                    <tr style="max-width:inherit" id="row">
+                        <td style="width:2%" id="color"></td>
+                        <td id="rowC"><input type="checkbox" data-bind="checked: isSelected, event: {click: $root.onChange}"></td>
+                        <td id="rowT"><span data-bind="text: title"></span></td>
+                        <td id="rowD"><span data-bind="text: dueDate"></span></td>
+                        <td style="cursor:pointer">
+                            <a>Assign to:</a>
+                            <div>
+                                <select class="form-control" style="width:inherit"></select>
+                            </div>
+                        </td>
+                        <td><span style="cursor:pointer" class="glyphicon glyphicon-ok"></span></td>
+                    </tr>
+                </tbody>               
+            </table>
             </div>
+        <div class="col-md-4">
+            <ul class="nav nav-tabs" >
+                <li ><a >View</a></li>
+                <li ><a >Edit</a></li>
+            </ul>
         </div>
-    </div>
-    </div>
-    @section scripts
-    {
-        <script>
-            $(".js-btn-close").click(function () {
-                var data = $(this).attr("data");
-                var chkGroup = ".checkbox" + data;
-                var boxes = $(chkGroup);
-                var chkBoxesID = new Array();
-                boxes.each(function (index, element) {
-                    if ($(element).prop('checked') == true) {
-                        chkBoxesID[index] = $(element).attr("id");
-                    }
-                });
-                $.ajax({
-                    url: '@Url.Action("Complete", "Task")',
-                    type: 'POST',
-                    data: JSON.stringify(chkBoxesID),
-                    contentType: "application/json;charset=utf-8",
-                    success: function () {
-                        location.reload();
-                    }
-                });
-            });
-
-            $(".js-btn-due-today").click(function(){
-            var data = $(this).attr("data");
-            var today = '@System.DateTime.Today.ToString()';
-                today = today.trim();
-            var dueTodayGroup = ".duetoday_"+data;
-            var chkGroup = ".checkbox" + data;
-            var todayTasks = $(dueTodayGroup);
-            var boxes = $(chkGroup);
-            todayTasks.each(function (index, element) {
-                var str = $(element).text();
-                str = str.trim();
-                if ( str == today) {
-                    $(boxes[index]).prop("checked", true);
-                    var id = $(boxes[index]).attr("id");
-                    var priority = $("#Priority_" + id).attr("data");
-                    priority = priority.toLowerCase().trim();
-                    var classname = "priority-color-" + priority;
-                    $("#Prior_1_" + id).addClass(classname);
-                    
-                }
-            });
-            });
-            $(".js-priority").click(function () {
-                var data = $(this).attr("data");
-                var chkGroup = ".checkbox" + data;
-                var boxes = $(chkGroup);
-                var chkBoxesID = new Array();
-                var prior = $(this).text();
-                boxes.each(function (index, element) {
-                    if ($(element).prop('checked') == true) {
-                        chkBoxesID[index] = $(element).attr("id");
-                    }
-                });
-                $.ajax({
-                    url: '@Url.Action("SetPriorityAll", "Task")',
-                    type: 'POST',
-                    data: {
-                        id: chkBoxesID,
-                        priority: prior
-                    },
-                    dataType: "json",
-                    success: function () {
-                        location.reload();
-                    }
-                });
-
-            });
-            $(".js-btn-delete-all").click(function () {
-                var data = $(this).attr("data");
-                var chkGroup = ".checkbox" + data;
-                var boxes = $(chkGroup);
-                var chkBoxesID = new Array();
-                boxes.each(function (index, element) {
-                    if ($(element).prop('checked') == true)
-                    {
-                        chkBoxesID[index] = $(element).attr("id");
-                   }
-                });
-
-                $.ajax({
-                    url: '@Url.Action("DeleteAll", "Task")',
-                    type: 'POST',
-                    data: JSON.stringify(chkBoxesID),
-                    contentType: "application/json;charset=utf-8",
-                    success: function () {
-                        location.reload();
-                    }
-                });
-            });
-            function OnClick() {
-                $.post("/task/add/",
-                        { "Title": $("#Title").val() })
-                    .done(function() {
-                        $(".js-btn-add").removeClass("btn-primary").addClass("btn-success");
-                    });
-            }
-            $("#Select_All1").change(function () {
-                $(".checkbox2").prop('checked', false);
-                $(".checkbox3").prop('checked', false);
-                $(".checkbox4").prop('checked', false);
-                $(".checkbox1").prop('checked', $(this).prop("checked"));
-                var boxes = $(".checkbox1");
-                $("#Select_All2").prop('checked', false);
-                $("#Select_All3").prop('checked', false);
-                $("#Select_All4").prop('checked', false);
-                $('[id ^= Prior_2_]').removeClass();
-                $('[id ^= Prior_3_]').removeClass();
-                $('[id ^= Prior_4_]').removeClass();
-                if(true == $(".checkbox1").prop("checked"))
-                {
-                    boxes.each(function (index, element) {
-                        var id = $(element).attr("id");
-                        var priority = $("#Priority_" + id).attr("data");
-                        priority = priority.toLowerCase().trim();
-                        var classname = "priority-color-" + priority;
-                        $("#Prior_1_" + id).addClass(classname);
-                    });
-                }
-            else{
-                boxes.each(function (index, element) {
-                    var id = $(element).attr("id");
-                    $("#Prior_1_" + id).removeClass();
-                });
-                }
-
-            });
-            $('.checkbox1').change(function () {
-                //uncheck "select all", if one of the listed checkbox item is unchecked
-                if (false == $(this).prop("checked")) { //if this item is unchecked
-                    $("#Select_All1").prop('checked', false); //change "select all" checked status to false
-                }
-                //check "select all" if all checkbox items are checked
-                if ($('.checkbox1:checked').length == $('.checkbox1').length) {
-                    $("#Select_All1").prop('checked', true);
-                }
-            });
-            $("#Select_All2").change(function () {
-                $(".checkbox1").prop('checked', false);
-                $(".checkbox3").prop('checked', false);
-                $(".checkbox4").prop('checked', false);
-                $(".checkbox2").prop('checked', $(this).prop("checked"));
-                var boxes = $(".checkbox2");
-                $("#Select_All1").prop('checked', false);
-                $("#Select_All3").prop('checked', false);
-                $("#Select_All4").prop('checked', false);
-                $('[id ^= Prior_1_]').removeClass();
-                $('[id ^= Prior_3_]').removeClass();
-                $('[id ^= Prior_4_]').removeClass();
-                if (true == $(".checkbox2").prop("checked"))
-                {
-                    boxes.each(function (index, element) {
-                        var id = $(element).attr("id");
-                        var priority = $("#Priority_" + id).attr("data");
-                        priority = priority.toLowerCase().trim();
-                        var classname = "priority-color-" + priority;
-                        $("#Prior_2_" + id).addClass(classname);
-                    });
-                }
-                else {
-                    boxes.each(function (index, element) {
-                        var id = $(element).attr("id");
-                        $("#Prior_2_" + id).removeClass();
-                    });
-                }
-
-            });
-            $('.checkbox2').change(function () {
-                //uncheck "select all", if one of the listed checkbox item is unchecked
-                if (false == $(this).prop("checked")) { //if this item is unchecked
-                    $("#Select_All2").prop('checked', false); //change "select all" checked status to false
-                }
-                //check "select all" if all checkbox items are checked
-                if ($('.checkbox2:checked').length == $('.checkbox2').length) {
-                    $("#Select_All2").prop('checked', true);
-                }
-            });
-            $("#Select_All3").change(function () {
-                $(".checkbox2").prop('checked', false);
-                $(".checkbox1").prop('checked', false);
-                $(".checkbox4").prop('checked', false);
-                $("#Select_All1").prop('checked', false);
-                $("#Select_All2").prop('checked', false);
-                $("#Select_All4").prop('checked', false);
-                $(".checkbox3").prop('checked', $(this).prop("checked"));
-                $('[id ^= Prior_2_]').removeClass();
-                $('[id ^= Prior_1_]').removeClass();
-                $('[id ^= Prior_4_]').removeClass();
-                var boxes = $(".checkbox3");
-                if (true == $(".checkbox3").prop("checked"))
-                {
-                    boxes.each(function (index, element) {
-                        var id = $(element).attr("id");
-                        var priority = $("#Priority_" + id).attr("data");
-                        priority = priority.toLowerCase().trim();
-                        var classname = "priority-color-" + priority;
-                        $("#Prior_3_" + id).addClass(classname);
-                    });
-                }
-                else {
-                    boxes.each(function (index, element) {
-                        var id = $(element).attr("id");
-                        $("#Prior_3_" + id).removeClass();
-                    });
-                }
-            });
-            $('.checkbox3').change(function () {
-                //uncheck "select all", if one of the listed checkbox item is unchecked
-                if (false == $(this).prop("checked")) { //if this item is unchecked
-                    $("#Select_All3").prop('checked', false); //change "select all" checked status to false
-                }
-                //check "select all" if all checkbox items are checked
-                if ($('.checkbox3:checked').length == $('.checkbox3').length) {
-                    $("#Select_All3").prop('checked', true);
-                }
-            });
-            $("#Select_All4").change(function () {
-                $(".checkbox2").prop('checked', false);
-                $(".checkbox3").prop('checked', false);
-                $(".checkbox1").prop('checked', false);
-                $("#Select_All3").prop('checked', false);
-                $("#Select_All2").prop('checked', false);
-                $("#Select_All1").prop('checked', false);
-                $(".checkbox4").prop('checked', $(this).prop("checked"));
-                $('[id ^= Prior_2_]').removeClass();
-                $('[id ^= Prior_3_]').removeClass();
-                $('[id ^= Prior_1_]').removeClass();
-                var boxes = $(".checkbox4");
-                if (true == $(".checkbox4").prop("checked"))
-                {
-                    boxes.each(function (index, element) {
-                        var id = $(element).attr("id");
-                        var priority = $("#Priority_" + id).attr("data");
-                        priority = priority.toLowerCase().trim();
-                        var classname = "priority-color-" + priority;
-                        $("#Prior_4_" + id).addClass(classname);
-                    });
-                }
-                else {
-                    boxes.each(function (index, element) {
-                        var id = $(element).attr("id");
-                        $("#Prior_4_" + id).removeClass();
-                    });
-                }
-
-            });
-            $('.checkbox4').change(function () {
-                //uncheck "select all", if one of the listed checkbox item is unchecked
-                if (false == $(this).prop("checked")) { //if this item is unchecked
-                    $("#Select_All4").prop('checked', false); //change "select all" checked status to false
-                }
-                //check "select all" if all checkbox items are checked
-                if ($('.checkbox4:checked').length == $('.checkbox4').length) {
-                    $("#Select_All4").prop('checked', true);
-                }
-            });
-            $(document).ready(function() {
-                $("#edit").hide();
-                $("#view").hide();
-            });
+        <!--***********************VIEW FORM*******************-->
+        <div class="col-md-4" ng-model="currentTask.isSelected" ng-show="currentTask.isSelected && detailsTab == 1">
+            <div class="panel panel-default" style="margin-bottom:0px">
+                <div class="panel-body details-panel">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="form-group" ng-model="currentTask">
+                                <label style="color:blue;text-transform:uppercase;max-width:100%;overflow:auto">{{currentTask.Title}}</label>
+                            </div>
+                        </div>                       
+                    </div>
+                    <div class="form-group" ng-model="currentTask">
+                        <label>Due date</label>
+                        {{currentTask.DueDate | date}}
+                    </div>
+                    <div class="form-group" ng-model="currentTask">
+                        <label>Time estimated</label>
+                        {{currentTask.TimeEstimated}} hours
+                    </div>
+                    <div class="form-group" ng-model="currentTask">
+                        <label>Priority</label>
+                        {{priority[currentTask.TaskPriority]}}
+                    </div>
+                    <div class="form-group" ng-model="currentTask" ng-show="currentTask.CommentCount != 0">
+                        <label>Comments</label>
+                        {{currentTask.CommentCount}}
+                        <label>Show</label>
+                        <input type="checkbox" ng-model="showComment" />
+                    </div>
+                    <div ng-show="showComment">
+                        <table>
+                            <tr ng-repeat="comment in currentTask.Comments">
+                                <td>{{comment.Text}}</td>
+                            </tr>
+                        </table>
+                    </div>
+                    <div ng-if="tab != 4" class="form-group" ng-model="currentTask">
+                        <form class="form-inline" name='commentform' novalidate>
+                            <div class="send-form-input col-md-6 ">
+                                <input class="form-control" type="text" placeholder="Enter your comment" ng-model="newComment" />
+                            </div>
+                            <div class="send-form-btn" col-md-6>
+                                <button type="submit" class="btn btn-primary" ng-click="addComment(currentTask,newComment)">Submit</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+             </div>
+          </div>
 
 
-            $(document).ready(function () {
-                $(".CheckEdit").change(function (e) {
-                    var id = $(e.target).attr("id");
-                    var data = $(e.target).attr("data");
-                    var boxes = window.$(".CheckEdit").sort("asc");
-                    var priority = $("#Priority_" + id).attr("data");
-                    priority = priority.toLowerCase().trim();
-                    var classname = "priority-color-" + priority;
-                    if ($(e.target).is(":checked"))
-                    {
-                        boxes.each(function (index, element) {
-                            $(element).prop("checked", false);
-                            $("#Prior_"+data+"_" + index).removeClass();
-                        });
-                        $(e.target).prop("checked", true);
-                        $("#view").show();
-                        $("#edit").hide();
-                        $("#Prior_" + data + "_" + id).addClass(classname);
-                        $.ajax({
-                            url: '@Url.Action("Edit","Task")/?id=' + id,
-                            dataType: "text",
-                            type: "GET",
-                            success: function (data) {
-                                $("#view").html(data);
-                                $(".comments").css("display", "none");
-                            }
-                        });
-                    }
-                    else {
-                        $(e.target).prop("checked", false);
-                        $("#view").hide();
-                        $("#edit").hide();
-                        $("#Prior_" + data + "_" + id).removeClass();
-                    }
-                });
-            });
+                <!--END VIEW FORM-->
+                <!--******************EDIT FORM*****************-->
+        <div class="col-md-4" ng-model="forEdit" ng-show="detailsTab == 2 && tab != 4">
+            <div class="panel panel-default" style="margin-bottom:0px">
+                <div class="panel-body details-panel">
+                    <div class="form-group" ng-model="currentTask">
+                        <label>Title</label>
+                        <input class="form-control" type="text" ng-model="currentTask.Title" />
+                    </div>
+                    <div class="form-group">
+                        <input style="display:inline" type="text" class="form-control" ng-model="currentTask.DueDate" />
+                        <span style="display:inline" class="glyphicon glyphicon-calendar"></span>
+                    </div>
+                    <div class="form-group" ng-model="currentTask">
+                        <label>Time estimated</label>
+                        <input class="form-control" type="text" ng-model="currentTask.TimeEstimated" />
+                    </div>
+                    <div class="form-group">
+                        <label>Group</label>
+                        <select class="form-control" ng-model="currentTask.GroupId">
+                            <option value="2">Home</option>
+                            <option value="3">Work</option>
+                        </select>
+                    </div>                
+                    <div class="form-group" ng-model="currentTask">
+                        <label>Priority</label>
+                        <select class="form-control" ng-model="currentTask.TaskPriority">
+                            <option ng-repeat="p in priority" value="{{p}}">{{p}}</option>
+                        </select>
+                    </div>
+                    <button class="btn btn-success" ng-click="update(currentTask)">Update</button>
+                </div>
+             </div>
+          </div>
+        </div>
+            <!--END EDIT FORM-->
 
-            function btnClick() {
-                var id = $("#taskID").val();
-                $("#view").hide();
-                $("#edit").show();
-                $.ajax({
-                    url: '@Url.Action("Edit","Task")/?id=' + id + '&act=edit',
-                    dataType: "text",
-                    type: "GET",
-                    success: function(data) {
-
-                        $("#edit").html(data);
-                    }
-                });
-                return true;
-            }
-
-            $("#Cancel").click(function() {
-                $("#view").show();
-                $("#edit").hide();
-            });
-
-            function btnShow() {
-                $(".comments").css("display", "block");
-            }
-
-            function btnHide() {
-                $(".comments").css("display", "none");
-            }
-
-        </script>
-    }
+        </div>
+<script src="~/Scripts/KnockoutModules/taskModule.js"></script>

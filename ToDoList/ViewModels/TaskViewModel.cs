@@ -22,8 +22,12 @@ namespace ToDoList.ViewModels
 
         public bool Closed { get; set; }
 
-        public string ApplicationUserId { get; set; }
+        public bool isSelected { get; set; }
+        
+        public bool HasAssignedUsers { get; set; }
 
+        // public string ApplicationUserId { get; set; }
+        public IEnumerable<UserViewModel> Users { get; set; }
         public IEnumerable<CommentViewModel> Comments
         {
             get { return _comments; }
@@ -39,12 +43,14 @@ namespace ToDoList.ViewModels
         public TaskViewModel()
         {
             _comments = new List<CommentViewModel>();
+            Users = new List<UserViewModel>();
         }
         public TaskViewModel(string Title)
         {
             
             this.Title = Title;
             this.Closed = false;
+            this.GroupId = 1;
             TaskPriority = Priority.None;
             DueDate = DateTime.Today;
             _comments = new List<CommentViewModel>();

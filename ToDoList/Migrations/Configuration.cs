@@ -9,7 +9,7 @@ namespace ToDoList.Migrations
     {
         public Configuration()
         {
-            AutomaticMigrationsEnabled = false;
+            AutomaticMigrationsEnabled = true;
         }
 
         protected override void Seed(ToDoList.Models.ApplicationDbContext context)
@@ -27,6 +27,5 @@ namespace ToDoList.Migrations
             //    );
             //
         }
-        
     }
 }

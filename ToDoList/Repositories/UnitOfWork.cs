@@ -12,6 +12,8 @@ namespace ToDoList.Repositories
         public ITaskRepository Tasks { get; private set; }
         public ICommentRepository Comments { get; private set; }
         public IGroupRepository Groups { get; private set; }
+
+        public IUserRepository Users { get; private set; }
         
         public UnitOfWork(ApplicationDbContext context)
         {
@@ -19,6 +21,7 @@ namespace ToDoList.Repositories
             Tasks = new TaskRepository(context);
             Comments = new CommentRepository(context);
             Groups = new GroupRepository(context);
+            Users = new UserRepository(context);
         } 
     }
 }

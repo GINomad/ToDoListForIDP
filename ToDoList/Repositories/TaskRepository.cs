@@ -25,7 +25,33 @@ namespace ToDoList.Repositories
 
         public IEnumerable<TaskViewModel> Tasks {
             get {
-                return Mapper.Map<IEnumerable<MyTask>, IEnumerable<TaskViewModel>>(_context.MyTasks).ToList();
+                var tasks = _context.MyTasks.Include(u => u.Users).ToList();
+                foreach( var t in tasks)
+                {
+                    t.Comments = _context.Comments.Where(x => x.MyTaskId == t.MyTaskId).ToList();
+                }
+
+                List<TaskViewModel> result = new List<TaskViewModel>();
+
+                foreach (var task in tasks)
+                {
+                    TaskViewModel model = new TaskViewModel();
+                    model.Closed = task.Closed;
+                    model.DueDate = task.DueDate;
+                    model.GroupId =  task.GroupId.HasValue ? task.GroupId.Value : 1;
+                    model.TaskPriority = task.TaskPriority;
+                    model.TaskId = task.MyTaskId;
+                    model.TimeEstimated = task.TimeEstimated;
+                    model.Title = task.Title;
+                    var users = (task.Users.Select(x => new UserViewModel { Id = x.Id, UserName = x.UserName }));
+                    model.Users = users;
+                    model.CommentCount = task.Comments.Count;
+                    model.Comments = Mapper.Map<List<Comment>, List<CommentViewModel>>(task.Comments.ToList());
+                    result.Add(model);
+
+                }
+                     
+                return result;
             }
         }
 
@@ -36,10 +62,35 @@ namespace ToDoList.Repositories
         public void AddTask(string Title, string id)
         {
             TaskViewModel model = new TaskViewModel(Title);
-            model.ApplicationUserId = id;
+           // model.ApplicationUserId = id;
             var task = Mapper.Map<TaskViewModel, MyTask>(model);
-            _context.MyTasks.Add(task);
-            _context.SaveChanges();
+            var user = _context.Users.FirstOrDefault(x => x.Id == id);
+            if(user != null)
+            {
+                task.Users.Add(user);
+                _context.MyTasks.Add(task);
+                _context.SaveChanges();
+            }
+           
+        }
+
+        public void Assign(string userId, int taskId)
+        {
+            var task = _context.MyTasks.First(x => x.MyTaskId == taskId);
+            if(task != null)
+            {
+                if(!task.Users.Any(u => u.Id == userId))
+                {
+                    var user = _context.Users.FirstOrDefault(x => x.Id == userId);
+
+                    if (user != null)
+                    {
+                        task.Users.Add(user);
+                        _context.SaveChanges();
+                    }                   
+                }
+            }
+
         }
 
         public TaskViewModel GetTaskById(int id)
@@ -47,7 +98,7 @@ namespace ToDoList.Repositories
             var task = _context.MyTasks.Where(t => t.MyTaskId == id).Include(c => c.Comments).ToList();
             if(task == null)
             {
-                throw new InvalidOperationException("I cannot found the user by id you sent");
+                throw new InvalidOperationException("Cannot found the user by id you sent");
             }
             TaskViewModel result = new TaskViewModel();
             result = Mapper.Map<MyTask, TaskViewModel>(task.Single());
@@ -93,7 +144,7 @@ namespace ToDoList.Repositories
         }
         
         public void SetPriority(int id, string priority)
-        {
+        {            
             var task = _context.MyTasks.FirstOrDefault(t => t.MyTaskId == id); 
             if(task != null)
             {

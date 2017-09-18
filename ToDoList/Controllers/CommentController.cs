@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
+using System.Web.Http;
 using System.Web.Mvc;
 using ToDoList.Models;
 using ToDoList.Repositories;
@@ -9,23 +10,25 @@ using ToDoList.ViewModels;
 
 namespace ToDoList.Controllers
 {
-    [Authorize]
-    public class CommentController : Controller
+    [System.Web.Http.Authorize]
+    [System.Web.Http.RoutePrefix("api/comment")]
+    public class CommentController : ApiController
     {
         private readonly IUnitOfWork _unitOfWork;
 
-        public CommentController(IUnitOfWork unitOfWork)
+        public CommentController()
         {
-            _unitOfWork = unitOfWork;
+            _unitOfWork = new UnitOfWork(new ApplicationDbContext());
         }
 
         // GET: Comment
-        [HttpPost]
-        public ActionResult AddComment(CommentViewModel model)
+        [System.Web.Http.HttpPost]
+        [System.Web.Http.ActionName("AddComment")]
+        public IHttpActionResult AddComment([FromBody]CommentViewModel model)
         {
             _unitOfWork.Comments.AddComment(model);
 
-            return RedirectToAction("Index","Home");
+            return Ok();
         }
     }
 }

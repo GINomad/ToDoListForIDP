@@ -16,7 +16,12 @@ namespace ToDoList.App_Start
             CreateMap<MyTask, TaskViewModel>()
                 .ForMember(t => t.TaskId,x => x.MapFrom(m => m.MyTaskId))
                 //.ForMember(u => u.ApplicationUserId, i => i.MapFrom(task => task.ApplicationUserId))
-                .ReverseMap();
+                .ReverseMap().AfterMap((dest, source) => {
+                    if(source.Users.Count >0)
+                    {
+                        dest.Users.ToList().AddRange(source.Users.Select(x => new UserViewModel { Id = x.Id, UserName = x.UserName }));
+                    }             
+                });
             CreateMap<Comment, CommentViewModel>().ReverseMap();
                        
         }
